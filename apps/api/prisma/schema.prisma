@@ -54,7 +54,7 @@ model Users {
   firstName String @db.VarChar(30)
   lastName String? @db.VarChar(30)
   email String @unique
-  password String @db.VarChar(50)
+  password String
   pointBalance Int @default(0)
   referralCode String @db.VarChar(15) @unique
   failedLogins Int @default(0)
@@ -72,7 +72,7 @@ model Organizers {
   id Int @id @default(autoincrement())
   name String @db.VarChar(50)
   email String @unique
-  password String @db.VarChar(50)
+  password String
   failedLogins Int @default(0)
   active ActiveStatus @default(Active)
   emailVerified Boolean @default(false)

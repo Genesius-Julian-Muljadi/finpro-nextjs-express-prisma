@@ -19,6 +19,7 @@ export default function LoginMenu() {
                             <span>Organizer</span>
                         </label>
                     </div>
+                    
                 </div>
             </div>
         </div>

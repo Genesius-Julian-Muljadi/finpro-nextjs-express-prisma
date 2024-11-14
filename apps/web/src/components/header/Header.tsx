@@ -1,4 +1,5 @@
-import LoginMenu from "./subcomponents/loginmenu/loginmenu";
+import LoginMenu from "./subcomponents/loginmenu";
+import SignupMenu from "./subcomponents/signupmenu";
 
 export function Header() {
   return (
@@ -10,12 +11,20 @@ export function Header() {
         <div className="col-start-3 col-end-10 row-start-1 row-end-2">
           Search bar with filters
         </div>
-        <div className="col-start-12 col-end-13 row-start-1 row-end-2" aria-label="Login button">
-          Login
+        <div className="col-start-11 col-end-12 row-start-1 row-end-2" aria-label="Log in button">
+          Log In
+        </div>
+        <div className="col-start-12 col-end-13 row-start-1 row-end-2" aria-label="Sign in button">
+          <button>
+            Sign Up
+          </button>
         </div>
       </div>
-      <div className="col-start-1 row-start-1">
+      <div className="col-start-1 row-start-1 z-50 hidden">
         <LoginMenu />
+      </div>
+      <div className="col-start-1 row-start-1 z-50">
+        <SignupMenu />
       </div>
     </div>
   );

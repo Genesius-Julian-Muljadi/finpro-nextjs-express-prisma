@@ -16,6 +16,7 @@ async function RegisterUser(req: Request, res: Response, next: NextFunction) {
     // Currently has no such validation
     try {
         const { email, firstName, lastName, password } = req.body;
+        console.log("Request body received: " + email + " " + firstName + " " + lastName + " " + "some password");
 
         const findUser = await prisma.users.findUnique({
             where: {
@@ -23,18 +24,22 @@ async function RegisterUser(req: Request, res: Response, next: NextFunction) {
             }
         });
         if (findUser) {
+            console.log("Duplicate email error");
             throw new Error("Email already exists");
         };
 
         const salt = await genSalt(10);
         const hashPassword = await hash(password, salt);
-        let refCode = await hash(email, salt);
+        console.log("salt and hash created");
+        let refCode = await hash(email, salt);  // Generate pseudo-random refCode using unique emails
         refCode = refCode.replace(/[^\w\s]/gi, '');
         refCode = refCode.slice(refCode.length - 15, refCode.length).toUpperCase();
+        console.log("refCode created" + " " + refCode);
         
         let newUser;
 
         await prisma.$transaction(async (prisma) => {
+            console.log("prisma transaction started");
             newUser = await prisma.users.create({
                 data: {
                     email: email,
@@ -44,25 +49,27 @@ async function RegisterUser(req: Request, res: Response, next: NextFunction) {
                     referralCode: refCode,
                 }
             });
+            console.log("prisma transaction concluded");
         });
         
-        const templatePath = path.join(
-            __dirname,
-            "../mailer/email_templates",
-            "registerUser.hbs"
-        );
-        const templateSource = fs.readFileSync(templatePath, "utf-8");
-        const compiledTemplate = Handlebars.compile(templateSource);
-        const html = compiledTemplate({ email, firstName });
+        // const templatePath = path.join(
+        //     __dirname,
+        //     "../mailer/email_templates",
+        //     "registerUser.hbs"
+        // );
+        // const templateSource = fs.readFileSync(templatePath, "utf-8");
+        // const compiledTemplate = Handlebars.compile(templateSource);
+        // const html = compiledTemplate({ email, firstName });
 
-        await transporter.sendMail({
-            to: email,
-            subject: "ConcertHub Registration Confirmation",
-            html: html,
-        });
+        // await transporter.sendMail({
+        //     to: email,
+        //     subject: "ConcertHub Registration Confirmation",
+        //     html: html,
+        // });
     
+        console.log("User registration added to database");
         res.status(200).send({
-            message: "Register successful! Please verify your email to log in.",
+            message: "Register successful!",
             data: newUser,
         });
 
