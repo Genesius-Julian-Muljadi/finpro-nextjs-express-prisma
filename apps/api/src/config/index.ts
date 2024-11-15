@@ -11,4 +11,5 @@ export const {
     SECRET_KEY2,
     NODEMAILER_EMAIL,
     NODEMAILER_PASSWORD,
+    ADMIN_EMAIL,
 } = process.env;

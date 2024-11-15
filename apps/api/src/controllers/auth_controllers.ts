@@ -3,7 +3,7 @@ import { PrismaClient } from "@prisma/client";
 import { compare, genSalt, hash } from "bcrypt";
 import { sign } from "jsonwebtoken";
 import { SECRET_KEY, SECRET_KEY2 } from "../config/index";
-import { User } from "../custom.d";
+import { Organizer } from "../custom.d";
 import { transporter } from "../mailer/mail";
 import path from "path";
 import fs from "fs";
@@ -159,19 +159,90 @@ async function LoginUser(req: Request, res: Response, next: NextFunction) {
 //     };
 // };
 
-async function VerifyOrganizer(req: Request, res: Response, next: NextFunction) {
+async function RegisterOrganizer(req: Request, res: Response, next: NextFunction) {
     try {
-        const { email } = req.user as User;
+        const { email, name, password } = req.body;
+        console.log("Request body received: " + email + " " + name + " " + "some password");
+
+        const findUser = await prisma.organizers.findUnique({
+            where: {
+                email: email,
+            }
+        });
+        if (findUser) {
+            console.log("Duplicate email error");
+            throw new Error("Email already exists");
+        };
+
+        const salt = await genSalt(10);
+        const hashPassword = await hash(password, salt);
+        console.log("salt and hash created");
+        
+        let newOrganizer;
 
         await prisma.$transaction(async (prisma) => {
+            console.log("prisma transaction started");
+            newOrganizer = await prisma.organizers.create({
+                data: {
+                    email: email,
+                    name: name,
+                    password: hashPassword,
+                }
+            });
+            console.log("prisma transaction concluded");
+        });
+        
+        const templatePath = path.join(
+            __dirname,
+            "../mailer/email_templates",
+            "registerOrganizer.hbs"
+        );
+        const templateSource = fs.readFileSync(templatePath, "utf-8");
+        const compiledTemplate = Handlebars.compile(templateSource);
+        const html = compiledTemplate({ email, name });
+
+        await transporter.sendMail({
+            to: email,
+            subject: "ConcertHub Organizer Registration Confirmation",
+            html: html,
+        });
+
+        const payload = {
+            email: email
+        };
+        const token = sign(payload, String(SECRET_KEY2))  // no expiration
+    
+        console.log("User registration added to database");
+        res.status(200).send({
+            message: "Register successful!",
+            data: newOrganizer,
+            access_token: token,
+        });
+
+    } catch(err) {
+        next(err);
+    };
+};
+
+async function VerifyOrganizer(req: Request, res: Response, next: NextFunction) {
+    try {
+        const { email } = req.organizer as Organizer;
+        console.log(email);
+        await prisma.$transaction(async (prisma) => {
+            console.log("prisma transaction started");
             await prisma.organizers.update({
                 where: {
                     email: email,
                 },
                 data: {
                     emailVerified: true,
-                }
+                },
             });
+            console.log("prisma transaction ended");
+        });
+
+        res.status(200).send({
+            message: "Email verified",
         });
     } catch (err) {
         next(err);
@@ -183,5 +254,6 @@ export {
     LoginUser,
     // UploaderAssist,
     // UploadUpdate,
+    RegisterOrganizer,
     VerifyOrganizer,
 };

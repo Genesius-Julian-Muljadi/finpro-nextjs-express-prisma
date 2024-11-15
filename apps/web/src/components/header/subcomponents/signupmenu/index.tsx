@@ -1,90 +1,48 @@
 "use client";
 
-import { Field, Form, Formik, FormikProps } from "formik";
-// import "./style.css"
-import IUser from "@/interfaces/user.interfaces";
-import SignupSchema from "./schema";
-import axios from "axios";
-import { apiURL } from "../../../../../../constants"
+import "./style.css";
+import SignupMenuUser from "./signupmenuuser";
+import { useEffect, useState } from "react";
+import SignupMenuOrganizer from "./signupmenuorganizer";
 
 export default function SignupMenu() {
-    const postUser = async (params: IUser) => {
-        try {
-            console.log(apiURL);
-            const API: string = apiURL + "/auth";
-            console.log(API);
-            await axios.post(API + "/registeruser", {
-                firstName: params.firstName,
-                lastName: params.lastName,
-                email: params.email,
-                password: params.password,
-            }
-            );
-        } catch(err) {
-            console.log(err);
+    const [role, setRole] = useState<number>(0);
+
+    useEffect(() => {
+        const menu1 = document.getElementById("signupmenuuser") as HTMLDivElement;
+        const menu2 = document.getElementById("signupmenuorganizer") as HTMLDivElement;
+        
+        if (role == 1) {
+            console.log("signup menu changed to participant");
+        } else if (role == 2) {
+            console.log("signup menu changed to organizer");
+        } else {
+            console.log("page loaded");
         };
-    };
+    });
 
     return (
         <div className="fixed grid h-screen w-screen" id="signupmenu">
-            <div className="my-auto mx-2 sm:mx-auto h-[480px] max-w-full sm:w-[640px] shadow-sm shadow-slate-700 bg-neutral-100 place-content-center" aria-label="Sign Up Menu">
-                <div className="mx-2 sm:mx-8 my-2 flex flex-col">
-                    <Formik
-                    initialValues={{
-                        firstName: "",
-                        lastName: "",
-                        email: "",
-                        password: "",
-                    }}
-                    validationSchema={SignupSchema}
-                    onSubmit={(values) => {
-                        console.log(values);
-                        postUser(values);
-                    }}>
-                        {(props: FormikProps<IUser>) => {
-                            const { values, errors, touched, handleChange } = props;
-
-                            return (
-                                <Form className="flex flex-col gap-4">
-                                    <div className="flex flex-col gap-1">
-                                        <label htmlFor="firstName" className="text-sm">First name </label>
-                                        <Field type="text" name="firstName" onChange={handleChange} values={values.firstName}
-                                        className="border border-black rounded-md px-2" />
-                                        {/* touched is also valid if field is focused from anywhere */}
-                                        {touched.firstName && errors.firstName ? (
-                                            <div className="text-sm text-red-600">{errors.firstName}</div>
-                                        ) : null}
-                                    </div>
-                                    <div className="flex flex-col gap-1">
-                                        <label htmlFor="lastName" className="text-sm">Last name </label>
-                                        <Field type="text" name="lastName" onChange={handleChange} values={values.lastName}
-                                        className="border border-black rounded-md px-2" />
-                                        {touched.lastName && errors.lastName ? (
-                                            <div>{errors.lastName}</div>
-                                        ) : null}
-                                    </div>
-                                    <div className="flex flex-col gap-1">
-                                        <label htmlFor="email" className="text-sm">Email </label>
-                                        <Field type="text" name="email" onChange={handleChange} values={values.email}
-                                        className="border border-black rounded-md px-2" />
-                                        {touched.email && errors.email ? (
-                                            <div>{errors.email}</div>
-                                        ) : null}
-                                    </div>
-                                    <div className="flex flex-col gap-1">
-                                        <label htmlFor="password" className="text-sm">Password </label>
-                                        <Field type="password" name="password" onChange={handleChange} values={values.password}
-                                        className="border border-black rounded-md px-2" />
-                                        {touched.password && errors.password ? (
-                                            <div>{errors.password}</div>
-                                        ) : null}
-                                    </div>
-                                    <button type="submit" className="rounded-md border border-black m-auto py-1 px-3">Sign Up</button>
-                                </Form>
-                            );
-                        }}
-                    </Formik>
-                    <button className="size-4 border border-black" onClick={() => {console.log("button pressed")}} />
+            <div className="my-auto mx-2 sm:mx-auto h-[540px] max-w-full sm:w-[640px] shadow-sm shadow-slate-700 bg-neutral-100 place-content-center" aria-label="Sign Up Menu">
+                <div className="mx-2 sm:mx-8 my-2 flex flex-col gap-6">
+                    <div className="grid grid-cols-2 grid-rows-1 *:m-auto *:border *:border-black *:px-5">
+                        <label className="cursor-pointer mt-[0.1rem] px-4 rounded-md hover:bg-zinc-200 active:bg-zinc-300">
+                            <input type="radio" name="signupradio" className="hidden" onClick={() => {setRole(() => 1); }} />
+                            <span>Participant</span>
+                        </label>
+                        <label className="cursor-pointer mt-[0.1rem] px-4 rounded-md hover:bg-zinc-200 active:bg-zinc-300">
+                            <input type="radio" name="signupradio" className="hidden" onClick={() => {setRole(() => 2); }} />
+                            <span>Organizer</span>
+                        </label>
+                    </div>
+                    <div className="grid grid-cols-1 grid-rows-1">
+                        <div className="col-start-1 col-end-2 row-start-1 row-end-2 z-[-1]">
+                            <SignupMenuUser />
+                        </div>
+                        <div className="col-start-1 col-end-2 row-start-1 row-end-2 z-[1]">
+                            <SignupMenuOrganizer />
+                        </div>
+                    </div>
                 </div>
             </div>
         </div>

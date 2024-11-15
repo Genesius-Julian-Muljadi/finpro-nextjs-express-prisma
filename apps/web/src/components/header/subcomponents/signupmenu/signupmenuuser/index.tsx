@@ -1,0 +1,93 @@
+"use client";
+
+import { Field, Form, Formik, FormikProps } from "formik";
+import { IUser } from "@/interfaces/usersignup";
+import axios from "axios";
+import { apiURL } from "../../../../../../../constants"
+import { SignupSchemaUser } from "../schema";
+
+export default function SignupMenuUser() {
+    const postUser = async (params: IUser) => {
+        try {
+            console.log(apiURL);
+            const API: string = apiURL + "/auth";
+            console.log(API);
+            await axios.post(API + "/registeruser", {
+                firstName: params.firstName,
+                lastName: params.lastName,
+                email: params.email,
+                password: params.password,
+            });
+        } catch(err) {
+            console.log(err);
+        };
+    };
+
+    return (
+        <div id="signupmenuuser">
+            <Formik
+                initialValues={{
+                    firstName: "",
+                    lastName: "",
+                    email: "",
+                    password: "",
+                    refCode: "",
+                }}
+                validationSchema={SignupSchemaUser}
+                onSubmit={(values) => {
+                    // console.log(values);
+                    postUser(values);
+                }}>
+                {(props: FormikProps<IUser>) => {
+                    const { values, errors, touched, handleChange } = props;
+
+                    return (
+                        <Form className="flex flex-col gap-4">
+                            <div className="flex flex-col gap-1">
+                                <label htmlFor="firstName" className="text-sm">First name </label>
+                                <Field type="text" name="firstName" onChange={handleChange} values={values.firstName} placeholder="Type first name here" aria-label="First name text box"
+                                    className="border border-black rounded-md px-2" />
+                                {touched.firstName && errors.firstName ? (
+                                    <div className="text-sm text-red-600">{errors.firstName}</div>
+                                ) : null}
+                            </div>
+                            <div className="flex flex-col gap-1">
+                                <label htmlFor="lastName" className="text-sm">Last name (Optional) </label>
+                                <Field type="text" name="lastName" onChange={handleChange} values={values.lastName} placeholder="Type last name here (optional)" aria-label="Optional last name text box"
+                                    className="border border-black rounded-md px-2" />
+                                {touched.lastName && errors.lastName ? (
+                                    <div className="text-sm text-red-600">{errors.lastName}</div>
+                                ) : null}
+                            </div>
+                            <div className="flex flex-col gap-1">
+                                <label htmlFor="email" className="text-sm">Email </label>
+                                <Field type="text" name="email" onChange={handleChange} values={values.email} placeholder="example@domain.com" aria-label="E-mail text box"
+                                    className="border border-black rounded-md px-2" />
+                                {touched.email && errors.email ? (
+                                    <div className="text-sm text-red-600">{errors.email}</div>
+                                ) : null}
+                            </div>
+                            <div className="flex flex-col gap-1">
+                                <label htmlFor="password" className="text-sm">Password </label>
+                                <Field type="password" name="password" onChange={handleChange} values={values.password} placeholder="Type password here" aria-label="Password text box"
+                                    className="border border-black rounded-md px-2" />
+                                {touched.password && errors.password ? (
+                                    <div className="text-sm text-red-600">{errors.password}</div>
+                                ) : null}
+                            </div>
+                            <div className="flex flex-col gap-1">
+                                <label htmlFor="refCode" className="text-sm">Referral code (Optional) </label>
+                                <Field type="text" name="refCode" onChange={handleChange} values={values.refCode} placeholder="Referral code from another participant" aria-label="Optional referral code text box"
+                                    className="border border-black rounded-md px-2" />
+                                {touched.refCode && errors.refCode ? (
+                                    <div className="text-sm text-red-600">{errors.refCode}</div>
+                                ) : null}
+                            </div>
+                            <button type="submit" className="rounded-md border border-black m-auto py-1 px-5 bg-sky-100 shadow-sm shadow-slate-300 mt-4">Sign Up</button>
+                        </Form>
+                    );
+                }}
+            </Formik>
+        </div>
+    );
+};
