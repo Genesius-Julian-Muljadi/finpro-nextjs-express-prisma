@@ -12,4 +12,5 @@ export const {
     NODEMAILER_EMAIL,
     NODEMAILER_PASSWORD,
     ADMIN_EMAIL,
+    BASE_WEB_URL,
 } = process.env;

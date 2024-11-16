@@ -27,7 +27,7 @@ async function VerifyToken(req: Request, res: Response, next: NextFunction) {
 async function VerifyTokenOrganizerSignup(req: Request, res: Response, next: NextFunction) {
     try {
         const token = req.header("Authorization")?.replace("Bearer ", "");
-        console.log(token);
+        console.log("Token received: " + token);
         if (!token) {
             throw new Error("Unauthorized access");
         };

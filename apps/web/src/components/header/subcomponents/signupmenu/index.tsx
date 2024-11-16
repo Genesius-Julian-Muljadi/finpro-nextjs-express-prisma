@@ -36,10 +36,10 @@ export default function SignupMenu() {
                         </label>
                     </div>
                     <div className="grid grid-cols-1 grid-rows-1">
-                        <div className="col-start-1 col-end-2 row-start-1 row-end-2 z-[-1]">
+                        <div className="col-start-1 col-end-2 row-start-1 row-end-2 z-[1]">
                             <SignupMenuUser />
                         </div>
-                        <div className="col-start-1 col-end-2 row-start-1 row-end-2 z-[1]">
+                        <div className="col-start-1 col-end-2 row-start-1 row-end-2 z-[-1]">
                             <SignupMenuOrganizer />
                         </div>
                     </div>

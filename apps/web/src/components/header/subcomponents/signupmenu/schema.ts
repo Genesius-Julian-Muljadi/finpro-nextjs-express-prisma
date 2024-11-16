@@ -17,7 +17,7 @@ const SignupSchemaUser = object({
         .max(50, "Passwords cannot exceed 50 characters.")
         .matches(/^(?=.*[A-Za-z])(?=.*\d)(?=.*[@$!%*#?&])[A-Za-z\d@$!%*#?&]{6,50}$/, "Passwords must contain at least 6 characters, at least one letter, one number, and one special character.")
         .required("Please input a password."),
-    refCode: string()
+    referralCode: string()
         .max(15, "Referral codes cannot exceed 15 characters")
         .notRequired(),
 });

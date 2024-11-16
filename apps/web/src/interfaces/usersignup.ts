@@ -3,7 +3,7 @@ interface IUser {
     lastName: string;
     email: string;
     password: string;
-    refCode: string;
+    referralCode: string;
 };
 
 interface IOrganizer {

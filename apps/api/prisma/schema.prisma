@@ -70,7 +70,7 @@ model Users {
 
 model Organizers {
   id Int @id @default(autoincrement())
-  name String @db.VarChar(50)
+  name String @db.VarChar(50) @unique
   email String @unique
   password String
   failedLogins Int @default(0)

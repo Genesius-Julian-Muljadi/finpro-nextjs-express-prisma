@@ -12,13 +12,13 @@ export default function SignupMenuOrganizer() {
             console.log(apiURL);
             const API: string = apiURL + "/auth";
             console.log(API);
-            console.log(params.name + " " + params.email + " " + params.password);
+            // console.log(params.name + " " + params.email + " " + params.password);
             const output = await axios.post(API + "/registerorganizer", {
                 name: params.name,
                 email: params.email,
                 password: params.password,
-            }
-            );
+            });
+            
             console.log(output);
         } catch(err) {
             console.log(err);

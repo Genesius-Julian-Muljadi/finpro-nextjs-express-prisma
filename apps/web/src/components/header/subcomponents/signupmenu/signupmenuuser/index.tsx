@@ -8,16 +8,20 @@ import { SignupSchemaUser } from "../schema";
 
 export default function SignupMenuUser() {
     const postUser = async (params: IUser) => {
+        console.log("form data received");
         try {
-            console.log(apiURL);
+            // console.log(apiURL);
             const API: string = apiURL + "/auth";
-            console.log(API);
-            await axios.post(API + "/registeruser", {
+            // console.log(API);
+            const output = await axios.post(API + "/registeruser", {
                 firstName: params.firstName,
                 lastName: params.lastName,
                 email: params.email,
                 password: params.password,
+                referralCode: params.referralCode,
             });
+
+            console.log(output);
         } catch(err) {
             console.log(err);
         };
@@ -31,11 +35,11 @@ export default function SignupMenuUser() {
                     lastName: "",
                     email: "",
                     password: "",
-                    refCode: "",
+                    referralCode: "",
                 }}
                 validationSchema={SignupSchemaUser}
                 onSubmit={(values) => {
-                    // console.log(values);
+                    console.log(values);
                     postUser(values);
                 }}>
                 {(props: FormikProps<IUser>) => {
@@ -76,11 +80,11 @@ export default function SignupMenuUser() {
                                 ) : null}
                             </div>
                             <div className="flex flex-col gap-1">
-                                <label htmlFor="refCode" className="text-sm">Referral code (Optional) </label>
-                                <Field type="text" name="refCode" onChange={handleChange} values={values.refCode} placeholder="Referral code from another participant" aria-label="Optional referral code text box"
+                                <label htmlFor="referralCode" className="text-sm">Referral code (Optional) </label>
+                                <Field type="text" name="referralCode" onChange={handleChange} values={values.referralCode} placeholder="Referral code from another participant" aria-label="Optional referral code text box"
                                     className="border border-black rounded-md px-2" />
-                                {touched.refCode && errors.refCode ? (
-                                    <div className="text-sm text-red-600">{errors.refCode}</div>
+                                {touched.referralCode && errors.referralCode ? (
+                                    <div className="text-sm text-red-600">{errors.referralCode}</div>
                                 ) : null}
                             </div>
                             <button type="submit" className="rounded-md border border-black m-auto py-1 px-5 bg-sky-100 shadow-sm shadow-slate-300 mt-4">Sign Up</button>
