@@ -1,6 +1,6 @@
 import { object, string } from "yup";
 
-const Schema = object({
+const LoginSchema = object({
     email: string()
         .email("Invalid email format.")
         .required("Please input your email."),
@@ -9,4 +9,6 @@ const Schema = object({
         .required("Please input a password.")
 });
 
-export default Schema;
+export { 
+    LoginSchema
+};

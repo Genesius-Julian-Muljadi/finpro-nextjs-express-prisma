@@ -189,6 +189,7 @@ async function RegisterUser(req: Request, res: Response, next: NextFunction) {
 async function LoginUser(req: Request, res: Response, next: NextFunction) {
     try {
         const { email, password } = req.body;
+        console.log("request body received");
         const findUser = await prisma.users.findUnique({
             where: {
                 email: email,
@@ -197,20 +198,43 @@ async function LoginUser(req: Request, res: Response, next: NextFunction) {
         if (!findUser) {
             throw new Error("Invalid credentials");
         };
+        console.log("email found");
+
+        if (findUser.failedLogins >= 5) {
+            console.log("Account locked: Too many failed logins")
+            throw new Error("Account locked: Please contact an administrator");
+        };
 
         const passwordMatches = await compare(password, findUser.password);
         if (!passwordMatches) {
             throw new Error("Invalid credentials");
         };
+        console.log("password matches");
+
+        await prisma.$transaction(async (prisma) => {
+            await prisma.users.update({
+                where: {
+                    id: findUser!.id,
+                },
+                data: {
+                    failedLogins: 0,
+                },
+            });
+        });
 
         const payload = {
             email: email,
+            name: findUser.firstName,
+            role: "user",
         };
         const token = sign(payload, String(SECRET_KEY), { expiresIn: 1200 })
+        console.log("token created")
 
-        res.status(200).send({
+        // throw new Error("test complete");
+
+        console.log("login successful: access token cookied")
+        res.status(200).cookie("access_token", token).send({
             message: "Login successful!",
-            access_token: token,
         });
 
     } catch(err) {
@@ -321,6 +345,7 @@ async function RegisterOrganizer(req: Request, res: Response, next: NextFunction
             subject: "ConcertHub Organizer Registration Confirmation",
             html: html,
         });
+        console.log("verification email sent");
     
         console.log("User registration added to database");
         res.status(200).send({
@@ -359,6 +384,93 @@ async function VerifyOrganizer(req: Request, res: Response, next: NextFunction) 
     };
 };
 
+async function LoginOrganizer(req: Request, res: Response, next: NextFunction) {
+    try {
+        const { email, password } = req.body;
+        console.log("request body received");
+        const findUser = await prisma.organizers.findUnique({
+            where: {
+                email: email,
+            }
+        });
+        if (!findUser) {
+            throw new Error("Invalid credentials");
+        };
+        console.log("email found");
+
+        if (findUser.failedLogins >= 5) {
+            console.log("Account locked: Too many failed logins")
+            throw new Error("Account locked: Please contact an administrator");
+        };
+
+        const passwordMatches = await compare(password, findUser.password);
+        if (!passwordMatches) {
+            throw new Error("Invalid credentials");
+        };
+        console.log("password matches");
+
+        await prisma.$transaction(async (prisma) => {
+            await prisma.organizers.update({
+                where: {
+                    id: findUser!.id,
+                },
+                data: {
+                    failedLogins: 0,
+                },
+            });
+        });
+
+        if (findUser.emailVerified === false) {
+            console.log("email not verified. attempting to resend verification email")
+
+            const emailpayload = {
+                email: email
+            };
+            const token = sign(emailpayload, String(SECRET_KEY2))  // no expiration
+            
+            const templatePath = path.join(
+                __dirname,
+                "../mailer/email_templates",
+                "registerOrganizer.hbs"
+            );
+    
+            const templateSource = fs.readFileSync(templatePath, "utf-8");
+            const compiledTemplate = Handlebars.compile(templateSource);
+            const verifyURL: String = String(BASE_WEB_URL) + "/verifysignup" + "/" + token;
+            const html = compiledTemplate({ email, name, verifyURL });
+    
+            await transporter.sendMail({
+                to: email,
+                subject: "ConcertHub Organizer Registration Confirmation",
+                html: html,
+            });
+            console.log("verification email sent");
+
+            res.status(200).send({
+                message: "A verification email has been sent. Please verify your email before you can log in."
+            });
+        };
+
+        const payload = {
+            email: email,
+            name: findUser.name,
+            role: "organizer",
+        };
+        const token = sign(payload, String(SECRET_KEY), { expiresIn: 1200 })
+        console.log("token created")
+
+        // throw new Error("test complete");
+
+        console.log("login successful: access token cookied")
+        res.status(200).cookie("access_token", token).send({
+            message: "Login successful!",
+        });
+
+    } catch(err) {
+        next(err);
+    };
+};
+
 export {
     RegisterUser,
     LoginUser,
@@ -366,4 +478,5 @@ export {
     // UploadUpdate,
     RegisterOrganizer,
     VerifyOrganizer,
+    LoginOrganizer,
 };

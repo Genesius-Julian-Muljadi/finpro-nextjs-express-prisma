@@ -1,20 +1,20 @@
 import { createSlice } from "@reduxjs/toolkit";
 
 const initialState = {
-    menuIsOpen: false
+    menuOpen: 0
 };
 
-const toggleLoginMenuSlice = createSlice({
-    name: "TLMSlice",
+const toggleMenuSlice = createSlice({
+    name: "TMSlice",
     initialState,
     reducers: {
-        toggleMenu: (state: {menuIsOpen: Boolean | null}, input: {payload: string}) => {
-            if (input.payload === "open") {
-                state.menuIsOpen = true;
-            } else if (input.payload === "close") {
-                state.menuIsOpen = false;
+        toggleMenu: (state: {menuOpen: number}, input: {payload: string}) => {
+            if (input.payload === "login") {
+                state.menuOpen = 1;
+            } else if (input.payload === "signup") {
+                state.menuOpen = 2;
             } else if (input.payload === "reset") {
-                state.menuIsOpen = null;
+                state.menuOpen = 0;
             } else {
                 console.log("Invalid input: " + input.payload);
             };
@@ -22,5 +22,5 @@ const toggleLoginMenuSlice = createSlice({
     },
 });
 
-export const { toggleMenu } = toggleLoginMenuSlice.actions;
-export default toggleLoginMenuSlice.reducer;
+export const { toggleMenu } = toggleMenuSlice.actions;
+export default toggleMenuSlice.reducer;

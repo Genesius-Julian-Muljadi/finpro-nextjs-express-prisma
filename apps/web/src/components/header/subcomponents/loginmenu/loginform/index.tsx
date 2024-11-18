@@ -1,25 +1,37 @@
 "use client";
 
 import { Field, Form, Formik, FormikProps } from "formik";
-import { IOrganizer } from "@/interfaces/signupform";
 import axios from "axios";
 import { apiURL } from "../../../../../../../constants"
-import { SignupSchemaOrganizer } from "../schema";
+import { LoginSchema } from "../schema";
+import { IUser } from "@/interfaces/loginform";
+import { useSelector } from "react-redux";
+import { useRouter } from "next/navigation";
 
-export default function SignupMenuOrganizer() {
-    const postOrganizer = async (params: IOrganizer) => {
+export default function LoginForm() {
+    let n = useSelector((state: {LRSSlice: {actionSelected: number}}) => state.LRSSlice.actionSelected);
+    const router = useRouter();
+
+    const postLogin = async (params: IUser) => {
         try {
             console.log(apiURL);
-            const API: string = apiURL + "/auth";
+            let API: string = apiURL + "/auth";
+            if (n === 1) {
+                API += "/loginuser";
+            } else if (n === 2) {
+                API += "/loginorganizer";
+            } else {
+                throw new Error("Invalid slice value: " + n);
+            }
             console.log(API);
             // console.log(params.name + " " + params.email + " " + params.password);
-            const output = await axios.post(API + "/registerorganizer", {
-                name: params.name,
+            const output = await axios.post(API, {
                 email: params.email,
                 password: params.password,
-            });
+            }, { withCredentials: true });
             
             console.log(output);
+            router.refresh();
         } catch(err) {
             console.log(err);
         };
@@ -29,28 +41,19 @@ export default function SignupMenuOrganizer() {
         <div>
             <Formik
                 initialValues={{
-                    name: "",
                     email: "",
                     password: "",
                 }}
-                validationSchema={SignupSchemaOrganizer}
+                validationSchema={LoginSchema}
                 onSubmit={(values) => {
                     // console.log(values);
-                    postOrganizer(values);
+                    postLogin(values);
                 }}>
-                {(props: FormikProps<IOrganizer>) => {
+                {(props: FormikProps<IUser>) => {
                     const { values, errors, touched, handleChange } = props;
 
                     return (
                         <Form className="flex flex-col gap-4">
-                            <div className="flex flex-col gap-1">
-                                <label htmlFor="name" className="text-sm">Name </label>
-                                <Field type="text" name="name" onChange={handleChange} values={values.name} placeholder="Type organizer name here" aria-label="Organizer name text box"
-                                    className="border border-black rounded-md px-2" />
-                                {touched.name && errors.name ? (
-                                    <div className="text-xs text-red-600">{errors.name}</div>
-                                ) : null}
-                            </div>
                             <div className="flex flex-col gap-1">
                                 <label htmlFor="email" className="text-sm">Email </label>
                                 <Field type="text" name="email" onChange={handleChange} values={values.email} placeholder="example@domain.com" aria-label="E-mail text box"
@@ -67,8 +70,8 @@ export default function SignupMenuOrganizer() {
                                     <div className="text-xs text-red-600">{errors.password}</div>
                                 ) : null}
                             </div>
-                            <button type="submit" className="rounded-md border border-black m-auto py-1 px-5 bg-sky-100 shadow-sm shadow-slate-300 mt-4" aria-label="Sign up button">
-                                Sign Up
+                            <button type="submit" className="rounded-md border border-black m-auto py-1 px-5 bg-sky-100 shadow-sm shadow-slate-300 mt-4" aria-label="Log in button">
+                                Log in
                             </button>
                         </Form>
                     );

@@ -27,14 +27,16 @@ async function VerifyToken(req: Request, res: Response, next: NextFunction) {
 async function VerifyTokenOrganizerSignup(req: Request, res: Response, next: NextFunction) {
     try {
         const token = req.header("Authorization")?.replace("Bearer ", "");
-        console.log("Token received: " + token);
         if (!token) {
+            console.log("Incorrect header format");
             throw new Error("Unauthorized access");
         };
+        console.log("Token received: " + token);
 
         const organizer = verify(token, String(SECRET_KEY2));
         console.log(organizer);
         if (!organizer) {
+            console.log("Key mismatch");
             throw new Error("Unauthorized access: Key mismatch");
         };
 
@@ -43,6 +45,7 @@ async function VerifyTokenOrganizerSignup(req: Request, res: Response, next: Nex
         next();
 
     } catch(err) {
+        console.log(err);
         next(err);
     };
 };
