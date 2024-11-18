@@ -1,0 +1,1 @@
+Verify page to confirm signups using the signup token as the param

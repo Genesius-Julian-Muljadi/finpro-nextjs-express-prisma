@@ -3,7 +3,7 @@
     <head>
         <meta charset="UTF-8" />
         <meta name="viewport" content="width=device-width">
-        <title>ConcertHub Participant Registration Confirmation</title>
+        <title>ConcertHub Organizer Registration Confirmation</title>
     </head>
     <body>
         <div>
@@ -11,12 +11,15 @@
             <p>Your account has been created under these credentials:</p>
             <div>
                 <ul>
-                    <li>Name: {{firstName}} {{ln}}</li>
+                    <li>Name: {{name}}</li>
                     <li>Email: {{email}}</li>
                 </ul>
             </div>
-            <div>You can now log in to our website with your email and passsword.</div>
+            <div>In order to access your account, you will have to verify your email address by clicking on the link below.</div>
         </div>
         <hl></hl>
+        <div>
+            <a href={{verifyURL}}>Verify</a>
+        </div>
     </body>
 </html>

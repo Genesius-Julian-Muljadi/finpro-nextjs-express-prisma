@@ -3,7 +3,7 @@ import "../../index.css";
 export default function HomeView() {
     return (
         <div>
-            <div className="flex flex-col gap-6 *:border *:border-black my-9">
+            <div className="flex flex-col gap-6 *:border *:border-black mb-9">
                 <div>
                     Slideshow
                 </div>
