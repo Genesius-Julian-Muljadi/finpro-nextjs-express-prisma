@@ -1,0 +1,1 @@
+dashboard page will be split into participants and users

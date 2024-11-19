@@ -5,12 +5,13 @@ import axios from "axios";
 import { apiURL } from "../../../../../../../constants"
 import { LoginSchema } from "../schema";
 import { IUser } from "@/interfaces/loginform";
-import { useSelector } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import { useRouter } from "next/navigation";
+import { toggleMenu } from "@/redux/slices/togglemenu";
 
 export default function LoginForm() {
     let n = useSelector((state: {LRSSlice: {actionSelected: number}}) => state.LRSSlice.actionSelected);
-    const router = useRouter();
+    const dispatch = useDispatch();
 
     const postLogin = async (params: IUser) => {
         try {
@@ -31,7 +32,7 @@ export default function LoginForm() {
             }, { withCredentials: true });
             
             console.log(output);
-            router.refresh();
+            dispatch(toggleMenu('reset'));
         } catch(err) {
             console.log(err);
         };

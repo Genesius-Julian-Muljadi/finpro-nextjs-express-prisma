@@ -189,13 +189,14 @@ async function RegisterUser(req: Request, res: Response, next: NextFunction) {
 async function LoginUser(req: Request, res: Response, next: NextFunction) {
     try {
         const { email, password } = req.body;
-        console.log("request body received");
+        console.log("request body received: " + email);
         const findUser = await prisma.users.findUnique({
             where: {
                 email: email,
             }
         });
         if (!findUser) {
+            console.log("email not found in database");
             throw new Error("Invalid credentials");
         };
         console.log("email found");
@@ -207,6 +208,18 @@ async function LoginUser(req: Request, res: Response, next: NextFunction) {
 
         const passwordMatches = await compare(password, findUser.password);
         if (!passwordMatches) {
+            console.log("incorrect password")
+            await prisma.$transaction(async (prisma) => {
+                await prisma.users.update({
+                    where: {
+                        id: findUser!.id,
+                    },
+                    data: {
+                        failedLogins: findUser.failedLogins + 1,
+                    },
+                });
+            });
+            console.log("incremented failedLogins");
             throw new Error("Invalid credentials");
         };
         console.log("password matches");
@@ -223,6 +236,7 @@ async function LoginUser(req: Request, res: Response, next: NextFunction) {
         });
 
         const payload = {
+            id: findUser.id,
             email: email,
             name: findUser.firstName,
             role: "user",
@@ -242,54 +256,41 @@ async function LoginUser(req: Request, res: Response, next: NextFunction) {
     };
 };
 
-// async function UploaderAssist(req: Request, res: Response, next: NextFunction) {
-//     try {
-//         const { file } = req;
-//         const { name } = req.body;
+async function TallyPointsByUserID(req: Request, res: Response, next: NextFunction) {
+    try {
+        const { id } = req.params;
+        console.log("ID received: " + id);
 
-//         console.log(file);
-//         console.log(name);
+        const data = await prisma.users.findUnique({
+            where: {
+                id: parseInt(id),
+            },
+            include: {
+                codeUsed: true,
+            },
+        });
+        if (!data) {
+            console.log("ID not found in database!");
+            throw new Error("ID not found in database");
+        };
+        console.log("ID found in database: " + data);
 
-//         if (!file) {
-//             throw new Error("No file uploaded")
-//         };
+        let tally: number = 0;
+        console.log("tally started");
+        for (let k in data.codeUsed) {
+            tally += data.codeUsed[k].nominal;
+        };
+        console.log("tally concluded: " + tally);
 
-//         res.status(200).send({
-//             message: "File uploaded",
-//         });
-//     } catch(err) {
-//         next(err);
-//     };
-// };
+        res.status(200).send({
+            message: "Tally concluded",
+            data: tally,
+        });
 
-// async function UploadUpdate(req: Request, res: Response, next: NextFunction) {
-//     try {
-//         const { file } = req;
-//         const { email } = req.user as User;
-
-//         console.log(file);
-//         console.log(email);
-
-//         if (!file) {
-//             throw new Error("No file uploaded")
-//         };
-
-//         await prisma.users.update({
-//             where: {
-//                 email: email,
-//             },
-//             data: {
-//                 image: file?.filename,
-//             },
-//         });
-
-//         res.status(200).send({
-//             message: "File uploaded",
-//         });
-//     } catch(err) {
-//         next(err);
-//     };
-// };
+    } catch (err) {
+        next(err);
+    };
+};
 
 async function RegisterOrganizer(req: Request, res: Response, next: NextFunction) {
     try {
@@ -471,12 +472,62 @@ async function LoginOrganizer(req: Request, res: Response, next: NextFunction) {
     };
 };
 
+// async function UploaderAssist(req: Request, res: Response, next: NextFunction) {
+//     try {
+//         const { file } = req;
+//         const { name } = req.body;
+
+//         console.log(file);
+//         console.log(name);
+
+//         if (!file) {
+//             throw new Error("No file uploaded")
+//         };
+
+//         res.status(200).send({
+//             message: "File uploaded",
+//         });
+//     } catch(err) {
+//         next(err);
+//     };
+// };
+
+// async function UploadUpdate(req: Request, res: Response, next: NextFunction) {
+//     try {
+//         const { file } = req;
+//         const { email } = req.user as User;
+
+//         console.log(file);
+//         console.log(email);
+
+//         if (!file) {
+//             throw new Error("No file uploaded")
+//         };
+
+//         await prisma.users.update({
+//             where: {
+//                 email: email,
+//             },
+//             data: {
+//                 image: file?.filename,
+//             },
+//         });
+
+//         res.status(200).send({
+//             message: "File uploaded",
+//         });
+//     } catch(err) {
+//         next(err);
+//     };
+// };
+
 export {
     RegisterUser,
     LoginUser,
-    // UploaderAssist,
-    // UploadUpdate,
+    TallyPointsByUserID,
     RegisterOrganizer,
     VerifyOrganizer,
     LoginOrganizer,
+    // UploaderAssist,
+    // UploadUpdate,
 };

@@ -10,6 +10,7 @@ import { useDispatch, useSelector } from "react-redux";
 
 export default function LoginSignup() {
     const [cookies, setCookie, removeCookie] = useCookies(['access_token']);
+    // const [menu, setMenu] = useState<boolean>(false);
     let n = useSelector((state: {TMSlice: {menuOpen: number}}) => state.TMSlice.menuOpen);
     const dispatch = useDispatch();
 
@@ -27,12 +28,13 @@ export default function LoginSignup() {
             loginMenu.style.display = "none";
             signupMenu.style.display = "grid";
         } else {
-            console.log("doing useEffect for reset");
+            console.log("doing useEffect for reset or page loaded");
             loginMenu.style.display = "none";
             signupMenu.style.display = "none";
         };
-    });
+    }, [n]);
 
+    // Access token verification
     let sessionToken = sessionStorage.getItem("access_token");
     let decodedToken: AccessToken | null = null;
     console.log("sessionToken: " + sessionToken);
@@ -50,34 +52,86 @@ export default function LoginSignup() {
         console.log("access token found in session storage: " + sessionToken);
         decodedToken =  jwtDecode(String(sessionToken));
     };
-    let userName: string = "jwt Error";
-    if (decodedToken && decodedToken.name) {
-        userName = decodedToken.name;
-    };
+    
+    // let userName: string = "jwt Error";
+    // if (decodedToken && decodedToken.name) {
+    //     userName = decodedToken.name;
+    // };
+
+    // // Toggle account menu
+    // useEffect(() => {
+    //     console.log("state changed: " + menu);
+    //     if (!decodedToken) {
+    //         return;
+    //     };
+        
+    //     const accountMenu = document.getElementById("accountmenudiv") as HTMLDivElement;
+
+    //     if (menu === true) {
+    //         accountMenu.style.display = "grid";
+    //     } else {
+    //         accountMenu.style.display = "none";
+    //     };
+    // }, [menu]);
+
+    // // Point balance tally for participants
+    // let accountMenuOpenedUser: boolean = false;
+    // let points: number | Promise<any> = 0;
+    // points = useMemo(() => {
+    //     const askForTally = async () => {
+    //         try {
+    //             const API: string = apiURL + "/auth";
+    //             const { data } = await axios.get(API + "/points/" + decodedToken!.id);
+    //             console.log(data);
+    //             return 1;
+    //         } catch (err) {
+    //             console.log(err);
+    //             return "something went wrong";
+    //         };
+    //     };
+    //     return askForTally();
+    // }, [accountMenuOpenedUser]);
 
     return (
         <div>
-            {!sessionToken ? (
-                <div className="grid grid-cols-2 grid-rows-1">
-                    <div className="col-start-1 col-end-2 row-start-1 row-end-2">
+            {!decodedToken ? (
+                <div className="grid grid-cols-3 grid-rows-1">
+                    <div className="col-start-2 col-end-3 row-start-1 row-end-2">
                         <button onClick={() => dispatch(toggleMenu('login'))} aria-label="Log in button">
                             Log in
                         </button>
                     </div>
-                    <div className="col-start-2 col-end-3 row-start-1 row-end-2">
+                    <div className="col-start-3 col-end-4 row-start-1 row-end-2">
                         <button onClick={() => dispatch(toggleMenu('signup'))} aria-label="Sign up button">
                             Sign up
                         </button>
                     </div>
                 </div>
             ) : (
-                <div className="grid grid-cols-2 grid-rows-1">
-                    <div className="col-start-1 col-end-2 row-start-1 row-end-2">
-                        <label aria-label={`Hello, ${userName}`}>
-                            Hello, {userName}!
-                        </label>
+                <div className="grid grid-cols-3 grid-rows-1">
+                    <div className="col-start-1 col-end-3 row-start-1 row-end-2">
+                        <a href="/dashboard">
+                            Dashboard
+                        </a>
                     </div>
-                    <div className="col-start-2 col-end-3 row-start-1 row-end-2">
+                    {/* <div className="col-start-1 col-end-3 row-start-1 row-end-2">
+                        <button className="hover:bg-neutral-600 hover:bg-opacity-20 active:bg-opacity-40" aria-label="Account menu button"
+                        onClick={() => {
+                            if (menu === true) {
+                                setMenu(false);
+                            } else {
+                                setMenu(true);
+                            };
+                        }}>
+                            Hello, {userName}!
+                        </button>
+                    </div>
+                    <div className="col-start-1 col-end-3 row-start-1 row-end-2" id="accountmenudiv">
+                        <div className="flex flex-col gap-1">
+                            <div>Dashboard link</div>
+                        </div>
+                    </div> */}
+                    <div className="col-start-3 col-end-4 row-start-1 row-end-2">
                         <button onClick={() => {removeCookie("access_token", { path: "/" }); sessionStorage.removeItem("access_token"); console.log("access tokens removed");}} aria-label="Log out button">
                             Log out
                         </button>
