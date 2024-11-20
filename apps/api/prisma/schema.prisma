@@ -86,6 +86,7 @@ model Events {
   id Int @id @default(autoincrement())
   organizerID Int
   organizer Organizers @relation(fields: [organizerID], references: [id])
+  image String @default("")
   title String @db.VarChar(50)
   eventDate DateTime
   leads String @db.VarChar(100)  // Event could have more than 1 lead artist; Display all at once in same string

@@ -193,7 +193,12 @@ async function LoginUser(req: Request, res: Response, next: NextFunction) {
         const findUser = await prisma.users.findUnique({
             where: {
                 email: email,
-            }
+            },
+            include: {
+                history: true,
+                codeUsed: true,
+                coupons: true,
+            },
         });
         if (!findUser) {
             console.log("email not found in database");
@@ -201,7 +206,7 @@ async function LoginUser(req: Request, res: Response, next: NextFunction) {
         };
         console.log("email found");
 
-        if (findUser.failedLogins >= 5) {
+        if (findUser.active === "Locked") {
             console.log("Account locked: Too many failed logins")
             throw new Error("Account locked: Please contact an administrator");
         };
@@ -220,6 +225,19 @@ async function LoginUser(req: Request, res: Response, next: NextFunction) {
                 });
             });
             console.log("incremented failedLogins");
+
+            if (findUser.failedLogins >= 5) {
+                await prisma.$transaction(async (prisma) => {
+                    await prisma.users.update({
+                        where: {
+                            id: findUser!.id,
+                        },
+                        data: {
+                            active: "Locked",
+                        },
+                    });
+                });
+            };
             throw new Error("Invalid credentials");
         };
         console.log("password matches");
@@ -240,6 +258,11 @@ async function LoginUser(req: Request, res: Response, next: NextFunction) {
             email: email,
             name: findUser.firstName,
             role: "user",
+            refCode: findUser.referralCode,
+            pointBalance: findUser.pointBalance,
+            pointHistory: findUser.codeUsed,
+            transactionHistory: findUser.history,  // Non-refunded transactions only
+            coupons: findUser.coupons,
         };
         const token = sign(payload, String(SECRET_KEY), { expiresIn: 1200 })
         console.log("token created")
@@ -453,6 +476,7 @@ async function LoginOrganizer(req: Request, res: Response, next: NextFunction) {
         };
 
         const payload = {
+            id: findUser.id,
             email: email,
             name: findUser.name,
             role: "organizer",
