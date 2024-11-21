@@ -270,7 +270,7 @@ async function LoginUser(req: Request, res: Response, next: NextFunction) {
         // throw new Error("test complete");
 
         console.log("login successful: access token cookied")
-        res.status(200).cookie("access_token", token).send({
+        res.status(200).cookie("access_token", token, { expires: new Date(new Date().valueOf() + 1200000) }).send({
             message: "Login successful!",
         });
 
@@ -575,7 +575,7 @@ async function LoginOrganizer(req: Request, res: Response, next: NextFunction) {
         // throw new Error("test complete");
 
         console.log("login successful: access token cookied")
-        res.status(200).cookie("access_token", token).send({
+        res.status(200).cookie("access_token", token, { expires: new Date(new Date().valueOf() + 1200000) }).send({
             message: "Login successful!",
         });
 

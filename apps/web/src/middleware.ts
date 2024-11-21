@@ -2,7 +2,7 @@ import { NextResponse } from "next/server";
 import type { NextRequest } from "next/server";
 import { cookies } from "next/headers";
 
-const protectedRoutes = ["/dashboard"];
+const protectedRoutes = ["/dashboard", "/events/purchase"];
 
 export default async function middleware(req: NextRequest) {
   try {
