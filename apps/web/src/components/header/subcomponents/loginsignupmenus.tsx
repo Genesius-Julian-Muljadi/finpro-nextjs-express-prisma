@@ -8,7 +8,6 @@ import { useEffect } from "react";
 import { useCookies } from "react-cookie";
 import { useDispatch, useSelector } from "react-redux";
 
-
 export default function LoginSignup() {
     const [cookies, setCookie, removeCookie] = useCookies(['access_token']);
     let n = useSelector((state: {TMSlice: {menuOpen: number}}) => state.TMSlice.menuOpen);

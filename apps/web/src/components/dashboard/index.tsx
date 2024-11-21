@@ -1,13 +1,11 @@
-"use client";
-
-import VerifyTokenClient from "@/functions/verifytokenclient";
+// import VerifyTokenClient from "@/functions/verifytokenclient";
 import UserDashboard from "./userdashboard";
 import OrganizerDashboard from "./organizerdashboard";
 import { AccessTokenOrganizer, AccessTokenUser } from "@/interfaces/accesstokens";
+import VerifyTokenServer from "@/functions/verifytokenserver";
 
-export default function DashboardView() {
-    const token: AccessTokenUser | AccessTokenOrganizer | null = VerifyTokenClient();
-    console.log(token);
+export default async function DashboardView() {
+    const token = await VerifyTokenServer();
 
     if (token?.role === "user") {
         return <UserDashboard token={token as AccessTokenUser} />

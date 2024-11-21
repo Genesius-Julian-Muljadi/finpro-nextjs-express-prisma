@@ -20,6 +20,7 @@ export default async function middleware(req: NextRequest) {
     return NextResponse.next();
   } catch (err) {
     console.log("Something went wrong");
+    console.log(err);
     return NextResponse.redirect(new URL("/login", req.nextUrl));
   };
 };
