@@ -2,7 +2,6 @@
 
 import { Field, Form, Formik, FormikProps } from "formik";
 import axios from "axios";
-import { apiURL, webURL } from "../../../../../../../constants"
 import { LoginSchema } from "../schema";
 import { IUser } from "@/interfaces/loginform";
 import { useDispatch, useSelector } from "react-redux";
@@ -16,8 +15,6 @@ export default function LoginForm() {
 
     const postLogin = async (params: IUser) => {
         try {
-            console.log(apiURL);
-            // let API: string = apiURL + "/auth";
             let API: string = process.env.NEXT_PUBLIC_BASE_API_URL + "/auth";
             if (n === 1) {
                 API += "/loginuser";
