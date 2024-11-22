@@ -3,16 +3,13 @@
 import { Field, Form, Formik, FormikProps } from "formik";
 import { IUser } from "@/interfaces/signupform";
 import axios from "axios";
-import { apiURL } from "../../../../../../../constants"
 import { SignupSchemaUser } from "../schema";
 
 export default function SignupMenuUser() {
     const postUser = async (params: IUser) => {
         console.log("form data received");
         try {
-            // console.log(apiURL);
-            const API: string = apiURL + "/auth";
-            // console.log(API);
+            const API: string = process.env.NEXT_PUBLIC_BASE_API_URL + "/auth";
             const output = await axios.post(API + "/registeruser", {
                 firstName: params.firstName,
                 lastName: params.lastName,
