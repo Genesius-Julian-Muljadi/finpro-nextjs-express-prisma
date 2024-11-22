@@ -2,7 +2,7 @@
 
 import { Field, Form, Formik, FormikProps } from "formik";
 import axios from "axios";
-import { apiURL } from "../../../../../../../constants"
+import { apiURL, webURL } from "../../../../../../../constants"
 import { LoginSchema } from "../schema";
 import { IUser } from "@/interfaces/loginform";
 import { useDispatch, useSelector } from "react-redux";
@@ -12,11 +12,13 @@ import { toggleMenu } from "@/redux/slices/togglemenu";
 export default function LoginForm() {
     let n = useSelector((state: {LRSSlice: {actionSelected: number}}) => state.LRSSlice.actionSelected);
     const dispatch = useDispatch();
+    const router = useRouter();
 
     const postLogin = async (params: IUser) => {
         try {
             console.log(apiURL);
-            let API: string = apiURL + "/auth";
+            // let API: string = apiURL + "/auth";
+            let API: string = process.env.NEXT_PUBLIC_BASE_API_URL + "/auth";
             if (n === 1) {
                 API += "/loginuser";
             } else if (n === 2) {
@@ -32,6 +34,14 @@ export default function LoginForm() {
             }, { withCredentials: true });
             
             console.log(output);
+
+            const isLoginPage = window.location.href.startsWith(process.env.NEXT_PUBLIC_BASE_WEB_URL + "/login");
+            if (isLoginPage) {
+                const loginMenu = document.getElementById("loginmenudiv") as HTMLDivElement;
+                loginMenu.style.display = "none";
+                router.push("/");
+            };
+
             dispatch(toggleMenu('reset'));
         } catch(err) {
             console.log(err);
