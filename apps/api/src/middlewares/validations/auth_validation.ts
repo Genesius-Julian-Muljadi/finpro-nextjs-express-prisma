@@ -3,7 +3,6 @@ import { body, validationResult } from "express-validator";
 
 const RegisterValidationUser = [
     body("email")
-        .trim()
         .notEmpty()
         .withMessage("Email is required")
         .isEmail()
@@ -18,7 +17,6 @@ const RegisterValidationUser = [
         .isLength({ min: 2 })
         .withMessage("Last name must contain at least 2 characters"),
     body("password")
-        .trim()
         .notEmpty()
         .withMessage("Password is required")
         .isLength({ min: 6 })

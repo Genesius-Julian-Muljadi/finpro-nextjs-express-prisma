@@ -193,12 +193,7 @@ async function LoginUser(req: Request, res: Response, next: NextFunction) {
         const findUser = await prisma.users.findUnique({
             where: {
                 email: email,
-            },
-            // include: {
-            //     history: true,
-            //     codeUsed: true,
-            //     coupons: true,
-            // },
+            }
         });
         if (!findUser) {
             console.log("email not found in database");
@@ -206,7 +201,7 @@ async function LoginUser(req: Request, res: Response, next: NextFunction) {
         };
         console.log("email found");
 
-        if (findUser.active === "Locked") {
+        if (findUser.failedLogins >= 5) {
             console.log("Account locked: Too many failed logins")
             throw new Error("Account locked: Please contact an administrator");
         };
@@ -225,19 +220,6 @@ async function LoginUser(req: Request, res: Response, next: NextFunction) {
                 });
             });
             console.log("incremented failedLogins");
-
-            if (findUser.failedLogins >= 5) {
-                await prisma.$transaction(async (prisma) => {
-                    await prisma.users.update({
-                        where: {
-                            id: findUser!.id,
-                        },
-                        data: {
-                            active: "Locked",
-                        },
-                    });
-                });
-            };
             throw new Error("Invalid credentials");
         };
         console.log("password matches");
@@ -258,11 +240,6 @@ async function LoginUser(req: Request, res: Response, next: NextFunction) {
             email: email,
             name: findUser.firstName,
             role: "user",
-            refCode: findUser.referralCode,
-            pointBalance: findUser.pointBalance,
-            // pointHistory: findUser.codeUsed,
-            // transactionHistory: findUser.history,  // Non-refunded transactions only
-            // coupons: findUser.coupons,
         };
         const token = sign(payload, String(SECRET_KEY), { expiresIn: 1200 })
         console.log("token created")
@@ -270,7 +247,7 @@ async function LoginUser(req: Request, res: Response, next: NextFunction) {
         // throw new Error("test complete");
 
         console.log("login successful: access token cookied")
-        res.status(200).cookie("access_token", token, { expires: new Date(new Date().valueOf() + 1200000) }).send({
+        res.status(200).cookie("access_token", token).send({
             message: "Login successful!",
         });
 
@@ -279,37 +256,12 @@ async function LoginUser(req: Request, res: Response, next: NextFunction) {
     };
 };
 
-async function GetCouponDataByUserID(req: Request, res: Response, next: NextFunction) {
+async function TallyPointsByUserID(req: Request, res: Response, next: NextFunction) {
     try {
         const { id } = req.params;
+        console.log("ID received: " + id);
 
-        const findUser = await prisma.users.findUnique({
-            where: {
-                id: parseInt(id),
-            },
-            include: {
-                coupons: true,
-            },
-        });
-
-        if (!findUser) {
-            throw new Error("User ID not found");
-        };
-
-        res.status(200).send({
-            message: "Coupons retrieved",
-            data: findUser.coupons,
-        });
-    } catch (err) {
-        next(err);
-    };
-};
-
-async function GetPointDataByUserID(req: Request, res: Response, next: NextFunction) {
-    try {
-        const { id } = req.params;
-
-        const findUser = await prisma.users.findUnique({
+        const data = await prisma.users.findUnique({
             where: {
                 id: parseInt(id),
             },
@@ -317,87 +269,24 @@ async function GetPointDataByUserID(req: Request, res: Response, next: NextFunct
                 codeUsed: true,
             },
         });
-
-        if (!findUser) {
-            throw new Error("User ID not found");
+        if (!data) {
+            console.log("ID not found in database!");
+            throw new Error("ID not found in database");
         };
+        console.log("ID found in database: " + data);
+
+        let tally: number = 0;
+        console.log("tally started");
+        for (let k in data.codeUsed) {
+            tally += data.codeUsed[k].nominal;
+        };
+        console.log("tally concluded: " + tally);
 
         res.status(200).send({
-            message: "Point history retrieved",
-            data: findUser.codeUsed,
-        });
-    } catch (err) {
-        next(err);
-    };
-};
-
-async function GetHistoryDataByUserID(req: Request, res: Response, next: NextFunction) {
-    try {
-        const { id } = req.params;
-
-        const findUser = await prisma.users.findUnique({
-            where: {
-                id: parseInt(id),
-            },
-            include: {
-                history: true,
-            },
+            message: "Tally concluded",
+            data: tally,
         });
 
-        if (!findUser) {
-            throw new Error("User ID not found");
-        };
-
-        res.status(200).send({
-            message: "Point history retrieved",
-            data: findUser.history,
-        });
-    } catch (err) {
-        next(err);
-    };
-};
-
-async function GetTransactionDataByTransactionID(req: Request, res: Response, next: NextFunction) {
-    try {
-        const { id } = req.params;
-
-        const findUser = await prisma.transactions.findUnique({
-            where: {
-                id: parseInt(id),
-            },
-        });
-
-        if (!findUser) {
-            throw new Error("User ID not found");
-        };
-
-        res.status(200).send({
-            message: "Transaction details retrieved",
-            data: findUser,
-        });
-    } catch (err) {
-        next(err);
-    };
-};
-
-async function GetEventDataByEventID(req: Request, res: Response, next: NextFunction) {
-    try {
-        const { id } = req.params;
-
-        const findUser = await prisma.events.findUnique({
-            where: {
-                id: parseInt(id),
-            },
-        });
-
-        if (!findUser) {
-            throw new Error("User ID not found");
-        };
-
-        res.status(200).send({
-            message: "Event details retrieved",
-            data: findUser,
-        });
     } catch (err) {
         next(err);
     };
@@ -564,7 +453,6 @@ async function LoginOrganizer(req: Request, res: Response, next: NextFunction) {
         };
 
         const payload = {
-            id: findUser.id,
             email: email,
             name: findUser.name,
             role: "organizer",
@@ -575,34 +463,11 @@ async function LoginOrganizer(req: Request, res: Response, next: NextFunction) {
         // throw new Error("test complete");
 
         console.log("login successful: access token cookied")
-        res.status(200).cookie("access_token", token, { expires: new Date(new Date().valueOf() + 1200000) }).send({
+        res.status(200).cookie("access_token", token).send({
             message: "Login successful!",
         });
 
     } catch(err) {
-        next(err);
-    };
-};
-
-async function GetOrganizerNameByID(req: Request, res: Response, next: NextFunction) {
-    try {
-        const { id } = req.params;
-        const findOrganizer = await prisma.organizers.findUnique({
-            where: {
-                id: parseInt(id),
-            },
-        });
-
-        if (!findOrganizer) {
-            throw new Error("Organizer not found with ID!");
-        };
-
-        res.status(200).send({
-            message: "Organizer found",
-            data: findOrganizer.name,
-        });
-
-    } catch (err) {
         next(err);
     };
 };
@@ -659,15 +524,10 @@ async function GetOrganizerNameByID(req: Request, res: Response, next: NextFunct
 export {
     RegisterUser,
     LoginUser,
-    GetCouponDataByUserID,
-    GetPointDataByUserID,
-    GetHistoryDataByUserID,
+    TallyPointsByUserID,
     RegisterOrganizer,
     VerifyOrganizer,
     LoginOrganizer,
-    GetOrganizerNameByID,
-    GetEventDataByEventID,
-    GetTransactionDataByTransactionID,
     // UploaderAssist,
     // UploadUpdate,
 };

@@ -10,8 +10,7 @@ export default function SignupMenuOrganizer() {
     const postOrganizer = async (params: IOrganizer) => {
         try {
             console.log(apiURL);
-            // const API: string = apiURL + "/auth";
-            const API: string = process.env.NEXT_PUBLIC_BASE_API_URL + "/auth";
+            const API: string = apiURL + "/auth";
             console.log(API);
             // console.log(params.name + " " + params.email + " " + params.password);
             const output = await axios.post(API + "/registerorganizer", {

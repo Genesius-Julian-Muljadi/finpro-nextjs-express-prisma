@@ -1,1 +1,0 @@
-purchase has no page on its own. must be followed by eventid
