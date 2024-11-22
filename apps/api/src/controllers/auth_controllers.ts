@@ -368,7 +368,7 @@ async function GetTransactionDataByTransactionID(req: Request, res: Response, ne
         });
 
         if (!findUser) {
-            throw new Error("User ID not found");
+            throw new Error("Transaction ID not found");
         };
 
         res.status(200).send({
@@ -391,7 +391,7 @@ async function GetEventDataByEventID(req: Request, res: Response, next: NextFunc
         });
 
         if (!findUser) {
-            throw new Error("User ID not found");
+            throw new Error("Event ID not found");
         };
 
         res.status(200).send({
@@ -459,7 +459,7 @@ async function RegisterOrganizer(req: Request, res: Response, next: NextFunction
         });
         console.log("verification email sent");
     
-        console.log("User registration added to database");
+        console.log("Organizer registration added to database");
         res.status(200).send({
             message: "Register successful!",
             data: newOrganizer,

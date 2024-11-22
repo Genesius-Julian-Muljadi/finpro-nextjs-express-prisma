@@ -1,4 +1,9 @@
+import InvalidEvent from "../invalidevent";
+
 export default function EventPageByIDView({ id }: { id: number }) {
+    if (!id) {
+        return <InvalidEvent />;
+    };
 
     return (
         <div>

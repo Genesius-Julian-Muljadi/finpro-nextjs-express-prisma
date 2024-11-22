@@ -1,5 +1,12 @@
-export default function EventPurchasePageByIDView({ id }: { id: number }) {
+import axios from "axios";
+import InvalidEvent from "../invalidevent";
 
+export default async function EventPurchasePageByIDView({ id }: { id: number }) {
+    if (!id) {
+        return <InvalidEvent />;
+    };
+
+    const eventData = await axios.get(process.env.NEXT_PUBLIC_BASE_API_URL + "/auth/eventevent/" + id);
     
     return (
         <div>

@@ -1,8 +1,9 @@
 import { NextResponse } from "next/server";
 import type { NextRequest } from "next/server";
 import { cookies } from "next/headers";
+import { NextURL } from "next/dist/server/web/next-url";
 
-const protectedRoutes = ["/dashboard", "/events/purchase"];
+const protectedRoutes = ["/events/purchase", "/dashboard"];
 
 export default async function middleware(req: NextRequest) {
   try {
@@ -14,17 +15,17 @@ export default async function middleware(req: NextRequest) {
     const token = cookieStore.get("access_token")?.value || "";
 
     if (isProtected && !token) {
-      return NextResponse.redirect(new URL("/login", req.nextUrl));
+      return NextResponse.redirect(new NextURL("/login", req.nextUrl));
     }
 
     return NextResponse.next();
   } catch (err) {
     console.log("Something went wrong");
     console.log(err);
-    return NextResponse.redirect(new URL("/login", req.nextUrl));
+    return NextResponse.redirect(new NextURL("/login", req.nextUrl));
   };
 };
 
 export const config = {
-  matcher: ["/dashboard/:path*"],
+  matcher: ["/dashboard/:path*", "/events/purchase/:path*"],
 };

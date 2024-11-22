@@ -1,12 +1,8 @@
-// import { BASE_API_URL } from "@/config";
 import axios from "axios";
-import { apiURL } from "../../../../../constants";
 
 async function SendTokenToVerify(tkn: string) {
     try {
-        const API: string = apiURL + "/auth";
-        console.log(API);
-        // await axios.post(BASE_API_URL + "/verify", {}, {
+        const API: string = process.env.NEXT_PUBLIC_BASE_API_URL + "/auth";
         const post = await axios.post(API + "/verify", {}, {
             headers: {
                 "Authorization": "Bearer " + tkn,
