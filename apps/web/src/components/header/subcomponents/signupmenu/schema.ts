@@ -10,11 +10,9 @@ const SignupSchemaUser = object({
         .max(30, "Last name cannot exceed 30 characters.")
         .notRequired(),
     email: string()
-        .trim()
         .email("Invalid email format.")
         .required("Email is required."),
     password: string()
-        .trim()
         .min(6, "Passwords must contain at least 6 characters.")
         .max(50, "Passwords cannot exceed 50 characters.")
         .matches(/^(?=.*[A-Za-z])(?=.*\d)(?=.*[@$!%*#?&])[A-Za-z\d@$!%*#?&]{6,50}$/, "Passwords must contain at least 6 characters, at least one letter, one number, and one special character.")
@@ -30,11 +28,9 @@ const SignupSchemaOrganizer = object({
         .max(30, "Name cannot exceed 30 characters.")
         .required("Name is required."),
     email: string()
-        .trim()
         .email("Invalid email format.")
         .required("Email is required."),
     password: string()
-        .trim()
         .min(6, "Passwords must contain at least 6 characters.")
         .max(50, "Passwords cannot exceed 50 characters.")
         .matches(/^(?=.*[A-Za-z])(?=.*\d)(?=.*[@$!%*#?&])[A-Za-z\d@$!%*#?&]{6,50}$/, "Passwords must contain at least 6 characters, at least one letter, one number, and one special character.")
