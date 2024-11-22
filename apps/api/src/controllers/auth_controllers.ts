@@ -403,6 +403,36 @@ async function GetEventDataByEventID(req: Request, res: Response, next: NextFunc
     };
 };
 
+async function GetEventDataByOrganizerID(req: Request, res: Response, next: NextFunction) {
+    try {
+        const { id } = req.params;
+        const { page, pageSize } = req.query;
+        const filter: {page: number; pageSize: number} = {
+            page: parseInt(String(page)) || 1,
+            pageSize: parseInt(String(pageSize)) || 20
+        };
+
+        const findEvents = await prisma.events.findMany({
+            where: {
+                organizerID: parseInt(id),
+            },
+            skip: filter.page != 1 ? (filter.page - 1) * filter.pageSize : 0,
+            take: filter.pageSize,
+        });
+
+        if (!findEvents) {
+            throw new Error("Organizer ID not found");
+        };
+
+        res.status(200).send({
+            message: "Event details retrieved",
+            data: findEvents,
+        });
+    } catch (err) {
+        next(err);
+    };
+};
+
 async function RegisterOrganizer(req: Request, res: Response, next: NextFunction) {
     try {
         const { email, name, password } = req.body;
@@ -656,6 +686,37 @@ async function GetOrganizerNameByID(req: Request, res: Response, next: NextFunct
 //     };
 // };
 
+async function GetEventDiscountDataByEventID(req: Request, res: Response, next: NextFunction) {
+    try {
+        const { id } = req.params;
+        if (!id) {
+            throw new Error("ID error!")
+        };
+
+        const findEvent = await prisma.events.findUnique({
+            where: {
+                id: parseInt(id),
+            },
+            include: {
+                discountLimited: true,
+                discountDeadline: true,
+            },
+        });
+
+        if (!findEvent) {
+            throw new Error("ID not found!");
+        };
+
+        res.status(200).send({
+            message: "Discount data retrieved",
+            data: {limited: findEvent.discountLimited, deadline: findEvent.discountDeadline},
+        });
+
+    } catch (err) {
+        next(err);
+    };
+};
+
 export {
     RegisterUser,
     LoginUser,
@@ -667,7 +728,9 @@ export {
     LoginOrganizer,
     GetOrganizerNameByID,
     GetEventDataByEventID,
+    GetEventDataByOrganizerID,
     GetTransactionDataByTransactionID,
+    GetEventDiscountDataByEventID,
     // UploaderAssist,
     // UploadUpdate,
 };

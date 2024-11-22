@@ -94,11 +94,12 @@ model Events {
   genre Genres @default(Other)
   venue String @db.VarChar(50)
   eventDesc String
-  maxUsers Int  // Maximum number of attendees/tickets sold
-  ticketsSold Int @default(0)  // Track how many tickets have been sold
+  maxNormals Int?  // Maximum number of attendees/tickets sold, not including VIPs
   maxVIPs Int @default(0)  // Maximum number of VIP tickets
-  VIPPrice Int?
+  normalsSold Int @default(0)  // Track how many normal tickets have been sold
+  VIPsSold Int @default(0)  // Track how many VIP tickets have been sold
   normalPrice Int @default(0)  // Events are allowed to be free
+  VIPPrice Int?
   discountType DiscountTypes @default(None)
   ratingAvg Float?
   dateCreated DateTime @default(now())
@@ -155,6 +156,7 @@ model Coupons {
   userID Int?  // Coupons can be created to provide for offline
   user Users? @relation(fields: [userID], references: [id])
   organizerID Int @default(5)  // Coupons must be created by an organizer. Default 5 for admin for referral coupons
+  // Coupons can only be used for events managed by this organizer, or any organizer if admin
   organizer Organizers @relation(name: "IDrel", fields: [organizerID], references: [id])
   organizerName String @default("admin")
   organizerN Organizers @relation(name: "Namerel", fields: [organizerName], references: [name])
