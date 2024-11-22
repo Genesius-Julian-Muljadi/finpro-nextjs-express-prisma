@@ -17,7 +17,8 @@ export default function LoginForm() {
     const postLogin = async (params: IUser) => {
         try {
             console.log(apiURL);
-            let API: string = apiURL + "/auth";
+            // let API: string = apiURL + "/auth";
+            let API: string = process.env.NEXT_PUBLIC_BASE_API_URL + "/auth";
             if (n === 1) {
                 API += "/loginuser";
             } else if (n === 2) {
@@ -34,7 +35,7 @@ export default function LoginForm() {
             
             console.log(output);
 
-            const isLoginPage = window.location.href.startsWith(webURL + "/login");        
+            const isLoginPage = window.location.href.startsWith(process.env.NEXT_PUBLIC_BASE_WEB_URL + "/login");
             if (isLoginPage) {
                 const loginMenu = document.getElementById("loginmenudiv") as HTMLDivElement;
                 loginMenu.style.display = "none";

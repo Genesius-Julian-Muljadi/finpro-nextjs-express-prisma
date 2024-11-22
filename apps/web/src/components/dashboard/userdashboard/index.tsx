@@ -1,11 +1,10 @@
 import { AccessTokenUser } from "@/interfaces/accesstokens";
 import { CouponHistoryClose, CouponHistoryOpen, PointHistoryClose, PointHistoryOpen } from "./buttons";
 import axios from "axios";
-import { apiURL } from "../../../../../constants";
 import { Coupons, Events, History, Point_Balance, Transactions } from "@/interfaces/database_tables";
 
 export default async function UserDashboard({ token }: { token: AccessTokenUser }) {
-    const API: string = apiURL + "/auth";
+    const API: string = process.env.NEXT_PUBLIC_BASE_API_URL + "/auth";
 
     const couponData = await axios.get(API + "/couponsuser/" + token.id);
     const coupons: Array<Coupons> = couponData.data.data;
