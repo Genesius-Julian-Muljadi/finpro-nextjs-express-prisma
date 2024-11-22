@@ -3,14 +3,11 @@
 import { Field, Form, Formik, FormikProps } from "formik";
 import { IOrganizer } from "@/interfaces/signupform";
 import axios from "axios";
-import { apiURL } from "../../../../../../../constants"
 import { SignupSchemaOrganizer } from "../schema";
 
 export default function SignupMenuOrganizer() {
     const postOrganizer = async (params: IOrganizer) => {
         try {
-            console.log(apiURL);
-            // const API: string = apiURL + "/auth";
             const API: string = process.env.NEXT_PUBLIC_BASE_API_URL + "/auth";
             console.log(API);
             // console.log(params.name + " " + params.email + " " + params.password);
