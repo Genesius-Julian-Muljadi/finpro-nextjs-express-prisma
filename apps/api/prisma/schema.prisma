@@ -79,16 +79,18 @@ model Organizers {
   dateCreated DateTime @default(now())
   updated DateTime @updatedAt
   events Events[]
-  coupons Coupons[]
+  coupons Coupons[] @relation("IDrel")
+  couponsN Coupons[] @relation("Namerel")
 }
 
 model Events {
   id Int @id @default(autoincrement())
   organizerID Int
   organizer Organizers @relation(fields: [organizerID], references: [id])
+  image String @default("")
   title String @db.VarChar(50)
   eventDate DateTime
-  leads String @db.VarChar(100)  // Event could have more than 1 lead artist; Display all at once in same string
+  overview String @db.VarChar(100)  // Event could have more than 1 lead artist; Display all at once in same string
   genre Genres @default(Other)
   venue String @db.VarChar(50)
   eventDesc String
@@ -102,7 +104,6 @@ model Events {
   dateCreated DateTime @default(now())
   updated DateTime @updatedAt
   transactions Transactions[]
-  history History[]
   artists Event_Artists[]
   ratings Event_Ratings[]
   discountLimited Events_Discount_Limited[]
@@ -125,6 +126,7 @@ model Transactions {
   total Int @default(0)  // Final total nominal of the transaction
   type TransactionTypes @default(Purchase)
   dateCreated DateTime @default(now())
+  history History[]
   special Transactions_Special[]
 }
 
@@ -132,8 +134,8 @@ model History {  // History of non-refunded events for each user
   id Int @id @default(autoincrement())
   userID Int
   user Users @relation(fields: [userID], references: [id])
-  eventID Int
-  event Events @relation(fields: [eventID], references: [id])
+  transactionID Int @unique
+  transaction Transactions @relation(fields: [transactionID], references: [id])
 }
 
 model Point_Balance {  // Points received only by referrals
@@ -153,7 +155,9 @@ model Coupons {
   userID Int?  // Coupons can be created to provide for offline
   user Users? @relation(fields: [userID], references: [id])
   organizerID Int @default(5)  // Coupons must be created by an organizer. Default 5 for admin for referral coupons
-  organizer Organizers @relation(fields: [organizerID], references: [id])
+  organizer Organizers @relation(name: "IDrel", fields: [organizerID], references: [id])
+  organizerName String @default("admin")
+  organizerN Organizers @relation(name: "Namerel", fields: [organizerName], references: [name])
   discount Int @default(10)  // %-based discount. Default 10 as referral coupon discount per mini project requirement
   expiryDate DateTime?  // Coupon can last indefinitely. Need only date portion
   active Boolean @default(true)  // Coupon should deactivate upon use
