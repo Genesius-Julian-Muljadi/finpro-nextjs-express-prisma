@@ -240,6 +240,37 @@ async function LoginUser(req: Request, res: Response, next: NextFunction) {
             throw new Error("Account locked: Please contact an administrator");
         };
 
+        if (findUser.emailVerified === false) {
+            console.log("email not verified. attempting to resend verification email")
+
+            const emailpayload = {
+                email: email
+            };
+            const token = sign(emailpayload, String(SECRET_KEY2), { expiresIn: "3hr" });
+            
+            const templatePath = path.join(
+                __dirname,
+                "../mailer/email_templates",
+                "registerOrganizer.hbs"
+            );
+    
+            const templateSource = fs.readFileSync(templatePath, "utf-8");
+            const compiledTemplate = Handlebars.compile(templateSource);
+            const verifyURL: String = String(BASE_WEB_URL) + "/verifysignup" + "/" + token;
+            const html = compiledTemplate({ email, name, verifyURL });
+    
+            await transporter.sendMail({
+                to: email,
+                subject: "ConcertHub Organizer Registration Confirmation",
+                html: html,
+            });
+            console.log("verification email sent");
+
+            res.status(500).send({
+                message: "A verification email has been sent. Please verify your email before you can log in."
+            });
+        };
+
         const passwordMatches = await compare(password, findUser.password);
         if (!passwordMatches) {
             console.log("incorrect password")
@@ -600,7 +631,7 @@ async function LoginOrganizer(req: Request, res: Response, next: NextFunction) {
             const emailpayload = {
                 email: email
             };
-            const token = sign(emailpayload, String(SECRET_KEY2))  // no expiration
+            const token = sign(emailpayload, String(SECRET_KEY2), { expiresIn: "3hr" });
             
             const templatePath = path.join(
                 __dirname,
@@ -620,7 +651,7 @@ async function LoginOrganizer(req: Request, res: Response, next: NextFunction) {
             });
             console.log("verification email sent");
 
-            res.status(200).send({
+            res.status(500).send({
                 message: "A verification email has been sent. Please verify your email before you can log in."
             });
         };
