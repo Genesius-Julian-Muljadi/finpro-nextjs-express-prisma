@@ -1,11 +1,12 @@
 import { Router } from "express";
-import { GetCouponDataByUserID, GetEventDataByEventID, GetEventDataByOrganizerID, GetEventDiscountDataByEventID, GetHistoryDataByUserID, GetOrganizerNameByID, GetPointDataByUserID, GetTransactionDataByTransactionID, LoginOrganizer, LoginUser, RegisterOrganizer, RegisterUser, VerifyOrganizer } from "../controllers/auth_controllers";
+import { GetCouponDataByUserID, GetEventDataByEventID, GetEventDataByOrganizerID, GetEventDiscountDataByEventID, GetHistoryDataByUserID, GetOrganizerNameByID, GetPointDataByUserID, GetTransactionDataByTransactionID, LoginOrganizer, LoginUser, RegisterEventByOrganizerID, RegisterOrganizer, RegisterUser, VerifyOrganizer, VerifyUser } from "../controllers/auth_controllers";
 import { RegisterValidationOrganizer, RegisterValidationUser } from "../middlewares/validations/auth_validation";
-import { VerifyTokenOrganizerSignup } from "../middlewares/auth_middleware";
+import { VerifyTokenOrganizerSignup, VerifyTokenUserSignup } from "../middlewares/auth_middleware";
 
 const router = Router();
 
 router.post("/registeruser", RegisterValidationUser, RegisterUser);
+router.post("/verifyuser", VerifyTokenUserSignup, VerifyUser);
 router.post("/loginuser", LoginUser);
 router.get("/couponsuser/:id", GetCouponDataByUserID);
 router.get("/pointsuser/:id", GetPointDataByUserID);
@@ -19,5 +20,6 @@ router.post("/registerorganizer", RegisterValidationOrganizer, RegisterOrganizer
 router.post("/verify", VerifyTokenOrganizerSignup, VerifyOrganizer);
 router.post("/loginorganizer", LoginOrganizer);
 router.get("/getorganizername/:id", GetOrganizerNameByID);
+router.post("/registerevent/:id", RegisterEventByOrganizerID);
 
 export default router;

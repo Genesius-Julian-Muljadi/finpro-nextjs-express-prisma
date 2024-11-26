@@ -10,6 +10,7 @@ import { useDispatch, useSelector } from "react-redux";
 
 export default function LoginSignup() {
     const [cookies, setCookie, removeCookie] = useCookies(['access_token']);
+    const [sessionCookies, setSession, removeSession] = useCookies(['access_token_session']);
     let n = useSelector((state: {TMSlice: {menuOpen: number}}) => state.TMSlice.menuOpen);
     const dispatch = useDispatch();
     const router = useRouter();
@@ -62,6 +63,7 @@ export default function LoginSignup() {
                         onClick={() => {
                             router.push("/");
                             removeCookie("access_token", { path: "/" });
+                            removeSession("access_token_session", { path: "/" });
                             sessionStorage.removeItem("access_token");
                             console.log("access tokens removed");
                         }}>

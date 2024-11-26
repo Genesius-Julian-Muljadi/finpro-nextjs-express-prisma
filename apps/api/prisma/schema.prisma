@@ -55,10 +55,11 @@ model Users {
   lastName String? @db.VarChar(30)
   email String @unique
   password String
-  pointBalance Int @default(0)
+  pointBalance Int @default(0)  // Might not be necessary
   referralCode String @db.VarChar(15) @unique
   failedLogins Int @default(0)
   active ActiveStatus @default(Active)
+  emailVerified Boolean @default(false)
   dateCreated DateTime @default(now())
   updated DateTime @updatedAt
   transactions Transactions[]
@@ -145,14 +146,14 @@ model Point_Balance {  // Points received only by referrals
   user1 Users @relation(name: "Referrer", fields: [user1ID], references: [id])
   user2ID Int @unique  // Each user can only use a referral code once
   user2 Users @relation(name: "Referee", fields: [user2ID], references: [id])
-  nominal Int @default(10000)  // 10k default, per mini project requirement
+  nominal Int @default(10000)  // 10k default, per mini project requirement. Will decrease on use.
   expiryDate DateTime  // Need only date portion, set to 90 days after date created
   dateCreated DateTime @default(now())
 }
 
 model Coupons {
   id Int @id @default(autoincrement())
-  code String @db.VarChar(15) @unique
+  code String @db.VarChar(15)
   userID Int?  // Coupons can be created to provide for offline
   user Users? @relation(fields: [userID], references: [id])
   organizerID Int @default(5)  // Coupons must be created by an organizer. Default 5 for admin for referral coupons

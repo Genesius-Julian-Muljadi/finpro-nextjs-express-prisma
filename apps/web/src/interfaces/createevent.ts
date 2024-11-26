@@ -6,10 +6,10 @@ interface CreateEvent {
     genre: string;
     venue: string;
     eventDesc: string;
-    maxNormals: number | null;
+    maxNormals: number;
     maxVIPs: number;
     normalPrice: number;
-    VIPPrice: number | null;
+    VIPPrice: number;
     discountType: string;
 };
 

@@ -3,16 +3,16 @@
 import { useRouter } from "next/navigation";
 import { useEffect } from "react";
 
-export default function InvalidEvent() {
+export default function NotFound() {
     const router = useRouter();
 
     useEffect(() => {
-        router.push("/events");
+        router.push("/");
     })
 
     return (
         <div className="flex">
-            <div className="m-auto">Invalid event ID</div>
+            <div className="m-auto">Page not found</div>
         </div>
     );
 };

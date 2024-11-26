@@ -24,6 +24,32 @@ async function VerifyToken(req: Request, res: Response, next: NextFunction) {
     };
 };
 
+async function VerifyTokenUserSignup(req: Request, res: Response, next: NextFunction) {
+    try {
+        const token = req.header("Authorization")?.replace("Bearer ", "");
+        if (!token) {
+            console.log("Incorrect header format");
+            throw new Error("Unauthorized access");
+        };
+        console.log("Token received: " + token);
+
+        const ver = verify(token, String(SECRET_KEY2));
+        console.log(ver);
+        if (!ver) {
+            console.log("Key mismatch");
+            throw new Error("Unauthorized access: Key mismatch");
+        };
+
+        req.user = ver as User;
+
+        next();
+
+    } catch(err) {
+        console.log(err);
+        next(err);
+    };
+};
+
 async function VerifyTokenOrganizerSignup(req: Request, res: Response, next: NextFunction) {
     try {
         const token = req.header("Authorization")?.replace("Bearer ", "");
@@ -33,14 +59,14 @@ async function VerifyTokenOrganizerSignup(req: Request, res: Response, next: Nex
         };
         console.log("Token received: " + token);
 
-        const organizer = verify(token, String(SECRET_KEY2));
-        console.log(organizer);
-        if (!organizer) {
+        const ver = verify(token, String(SECRET_KEY2));
+        console.log(ver);
+        if (!ver) {
             console.log("Key mismatch");
             throw new Error("Unauthorized access: Key mismatch");
         };
 
-        req.organizer = organizer as Organizer;
+        req.organizer = ver as Organizer;
 
         next();
 
@@ -65,6 +91,7 @@ async function AdminGuard(req: Request, res: Response, next: NextFunction) {
 
 export {
     VerifyToken,
+    VerifyTokenUserSignup,
     VerifyTokenOrganizerSignup,
     AdminGuard,
 };

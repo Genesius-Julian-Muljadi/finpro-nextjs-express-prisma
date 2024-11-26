@@ -3,7 +3,7 @@ import { PrismaClient } from "@prisma/client";
 import { compare, genSalt, hash } from "bcrypt";
 import { sign } from "jsonwebtoken";
 import { BASE_WEB_URL, SECRET_KEY, SECRET_KEY2 } from "../config/index";
-import { Organizer } from "../custom.d";
+import { Organizer, User } from "../custom.d";
 import { transporter } from "../mailer/mail";
 import path from "path";
 import fs from "fs";
@@ -112,17 +112,75 @@ async function RegisterUser(req: Request, res: Response, next: NextFunction) {
                 }
             });
 
-            if (referralCode) {
-                console.log("referral code valid: added referral code bonuses");
+            console.log("prisma transaction successful: user data created");
+        });
+        
+        const templatePath = path.join(
+            __dirname,
+            "../mailer/email_templates",
+            "registerUser.hbs"
+        );
+        const templateSource = fs.readFileSync(templatePath, "utf-8");
+        const compiledTemplate = Handlebars.compile(templateSource);
+        let ln = lastName;
+        if (!lastName) {
+            ln = "";
+        };
+        const payload = {
+            email: email,
+            refCode: "",
+        };
+        if (referralCode) {
+            payload.refCode = referralCode;
+        };
+        const token = sign(payload, String(SECRET_KEY2), { expiresIn: "3hr" });
+        let verifyURL: String = String(BASE_WEB_URL) + "/verifysignup/user" + "/" + token;
+        const html = compiledTemplate({ email, firstName, ln, verifyURL });
+
+        await transporter.sendMail({
+            to: email,
+            subject: "ConcertHub Registration Confirmation",
+            html: html,
+        });
+        console.log("Email sent");
+    
+        console.log("User registration added to database");
+        res.status(200).send({
+            message: "Register successful!",
+            data: newUser,
+        });
+
+    } catch(err) {
+        next(err);
+    };
+};
+
+async function VerifyUser(req: Request, res: Response, next: NextFunction) {
+    try {
+        const { email, refCode } = req.user as User;
+        console.log("Email from JSON Web Token: " + email);
+        await prisma.$transaction(async (prisma) => {
+            console.log("prisma transaction started: verifying email in database");
+            const newUser = await prisma.users.update({
+                where: {
+                    email: email,
+                },
+                data: {
+                    emailVerified: true,
+                },
+            });
+
+            if (refCode !== "") {
+                console.log("referral code valid: adding referral code bonuses");
                 const findRefCode = await prisma.users.findUnique({
                     where: {
-                        referralCode: referralCode,
+                        referralCode: refCode,
                     },
                 });
 
                 await prisma.coupons.create({
                     data: {
-                        code: referralCode,
+                        code: refCode,
                         userID: newUser.id,
                     },
                 });
@@ -151,37 +209,13 @@ async function RegisterUser(req: Request, res: Response, next: NextFunction) {
 
                 console.log("referral code bonuses added");
             };
-
-            console.log("prisma transaction successful: user data created");
-        });
-        
-        const templatePath = path.join(
-            __dirname,
-            "../mailer/email_templates",
-            "registerUser.hbs"
-        );
-        const templateSource = fs.readFileSync(templatePath, "utf-8");
-        const compiledTemplate = Handlebars.compile(templateSource);
-        let ln = lastName;
-        if (!lastName) {
-            ln = "";
-        };
-        const html = compiledTemplate({ email, firstName, ln });
-
-        await transporter.sendMail({
-            to: email,
-            subject: "ConcertHub Registration Confirmation",
-            html: html,
-        });
-        console.log("Email sent");
-    
-        console.log("User registration added to database");
-        res.status(200).send({
-            message: "Register successful!",
-            data: newUser,
+            console.log("prisma transaction ended: emailVerified updated in database");
         });
 
-    } catch(err) {
+        res.status(201).send({
+            message: "Email verified",
+        });
+    } catch (err) {
         next(err);
     };
 };
@@ -194,11 +228,6 @@ async function LoginUser(req: Request, res: Response, next: NextFunction) {
             where: {
                 email: email,
             },
-            // include: {
-            //     history: true,
-            //     codeUsed: true,
-            //     coupons: true,
-            // },
         });
         if (!findUser) {
             console.log("email not found in database");
@@ -264,13 +293,16 @@ async function LoginUser(req: Request, res: Response, next: NextFunction) {
             // transactionHistory: findUser.history,  // Non-refunded transactions only
             // coupons: findUser.coupons,
         };
-        const token = sign(payload, String(SECRET_KEY), { expiresIn: 1200 })
+        const token = sign(payload, String(SECRET_KEY))
         console.log("token created")
 
         // throw new Error("test complete");
 
         console.log("login successful: access token cookied")
-        res.status(200).cookie("access_token", token, { expires: new Date(new Date().valueOf() + 1200000) }).send({
+        res.status(200)
+        .cookie("access_token", token, { expires: new Date(new Date().valueOf() + 2400000) })
+        // .cookie("access_token_session", token)  // Session cookie
+        .send({
             message: "Login successful!",
         });
 
@@ -469,7 +501,7 @@ async function RegisterOrganizer(req: Request, res: Response, next: NextFunction
         const payload = {
             email: email
         };
-        const token = sign(payload, String(SECRET_KEY2))  // no expiration
+        const token = sign(payload, String(SECRET_KEY2), { expiresIn: "3hr" });
         
         const templatePath = path.join(
             __dirname,
@@ -479,7 +511,7 @@ async function RegisterOrganizer(req: Request, res: Response, next: NextFunction
 
         const templateSource = fs.readFileSync(templatePath, "utf-8");
         const compiledTemplate = Handlebars.compile(templateSource);
-        const verifyURL: String = String(BASE_WEB_URL) + "/verifysignup" + "/" + token;
+        const verifyURL: String = String(BASE_WEB_URL) + "/verifysignup/organizer" + "/" + token;
         const html = compiledTemplate({ email, name, verifyURL });
 
         await transporter.sendMail({
@@ -599,13 +631,16 @@ async function LoginOrganizer(req: Request, res: Response, next: NextFunction) {
             name: findUser.name,
             role: "organizer",
         };
-        const token = sign(payload, String(SECRET_KEY), { expiresIn: 1200 })
+        const token = sign(payload, String(SECRET_KEY))
         console.log("token created")
 
         // throw new Error("test complete");
 
         console.log("login successful: access token cookied")
-        res.status(200).cookie("access_token", token, { expires: new Date(new Date().valueOf() + 1200000) }).send({
+        res.status(200)
+        .cookie("access_token", token, { expires: new Date(new Date().valueOf() + 2400000) })
+        // .cookie("access_token_session", token)  // Session cookie
+        .send({
             message: "Login successful!",
         });
 
@@ -717,8 +752,75 @@ async function GetEventDiscountDataByEventID(req: Request, res: Response, next: 
     };
 };
 
+async function RegisterEventByOrganizerID(req: Request, res: Response, next: NextFunction) {
+    try {
+        const { id } = req.params;
+        const {
+            image,
+            title,
+            eventDate,
+            overview,
+            genre,
+            venue,
+            eventDesc,
+            maxNormals,
+            maxVIPs,
+            normalPrice,
+            VIPPrice,
+            discountType
+        } = req.body;
+        console.log("Request body received");
+        console.log(image);
+        console.log(title);
+        console.log(new Date(eventDate));
+        console.log(overview);
+        console.log(genre);
+        console.log(venue);
+        console.log(eventDesc);
+        console.log(maxNormals);
+        console.log(maxVIPs);
+        console.log(normalPrice);
+        console.log(VIPPrice);
+        console.log(discountType);
+        
+        let newEvent;
+
+        await prisma.$transaction(async (prisma) => {
+            console.log("prisma transaction started: creating event data");
+            newEvent = await prisma.events.create({
+                data: {
+                    image: image,
+                    title: title,
+                    eventDate: new Date(eventDate),
+                    overview: overview,
+                    genre: genre,
+                    venue: venue,
+                    eventDesc: eventDesc,
+                    maxNormals: maxNormals,
+                    maxVIPs: maxVIPs,
+                    normalPrice: normalPrice,
+                    VIPPrice: VIPPrice,
+                    discountType: discountType,
+                    organizerID: parseInt(id),
+                },
+            });
+            console.log("prisma transaction concluded: event data created");
+        });
+    
+        console.log("Event registration added to database");
+        res.status(200).send({
+            message: "Event creation successful!",
+            data: newEvent,
+        });
+
+    } catch(err) {
+        next(err);
+    };
+};
+
 export {
     RegisterUser,
+    VerifyUser,
     LoginUser,
     GetCouponDataByUserID,
     GetPointDataByUserID,
@@ -731,6 +833,7 @@ export {
     GetEventDataByOrganizerID,
     GetTransactionDataByTransactionID,
     GetEventDiscountDataByEventID,
+    RegisterEventByOrganizerID,
     // UploaderAssist,
     // UploadUpdate,
 };

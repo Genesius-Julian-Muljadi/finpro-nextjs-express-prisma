@@ -1,12 +1,32 @@
-import { object, string } from "yup";
+import { date, number, object, string } from "yup";
 
 const EventSchema = object({
-    // email: string()
-    //     .email("Invalid email format.")
-    //     .required("Please input your email."),
-    // password: string()
-    //     .min(6, "Password contains at least 6 characters.")
-    //     .required("Please input a password.")
+    image: string()
+        .trim()
+        .notRequired(),
+    title: string()
+        .required(),
+    eventDate: date()
+        .required("Date is required"),
+    overview: string()
+        .max(100)
+        .required(),
+    genre: string()
+        .required(),
+    venue: string()
+        .required(),
+    eventDesc: string()
+        .required(),
+    maxNormals: number()
+        .moreThan(-1),
+    maxVIPs: number()
+        .moreThan(-1),
+    normalPrice: number()
+        .moreThan(-1),
+    VIPPrice: number()
+        .moreThan(-1),
+    discountType: string()
+        .required(),
 });
 
 export { 
