@@ -43,7 +43,7 @@ export default async function UserDashboard({ token }: { token: AccessTokenUser 
     const eventData: Array<Events> = [];
     for (let i = 0; i < transactionData.length; i++) {
         const data = await axios.get(API + "/eventevent/" + transactionData[i].eventID);
-        eventData.push();
+        eventData.push(data.data.data);
     };
 
     return (
@@ -130,8 +130,7 @@ export default async function UserDashboard({ token }: { token: AccessTokenUser 
                         <thead>
                             <tr>
                                 <th>Event</th>
-                                <th>Regular tickets</th>
-                                <th>VIPs tickets</th>
+                                <th>Regular / VIP</th>
                                 <th>Total</th>
                             </tr>
                         </thead>
@@ -139,8 +138,7 @@ export default async function UserDashboard({ token }: { token: AccessTokenUser 
                             {history?.map((item) => (
                                 <tr key={item.id}>
                                     <td>{eventData.shift()?.title}</td>
-                                    <td>{transactionData[0].ticketCount}</td>
-                                    <td>{transactionData[0].VIPs}</td>
+                                    <td>{transactionData[0].ticketCount} / {transactionData[0].VIPs}</td>
                                     <td>{transactionData.shift()?.total}</td>
                                 </tr>
                             ))}

@@ -33,24 +33,10 @@ export default function PurchaseForm({
             setPoints(points);
         };
     }, [total, finalTotal, discount]);
-    // let finalLet: number = 0;
-    // let pointsLet: number = points;
 
-    // useEffect(() => {
-    //     console.log(total);
-    //     let maxPoints: number = points;
-    //     const couponTotal: number = (1 - (couponDiscount / 100)) * total;
-    //     if (couponTotal < points) {
-    //         maxPoints = couponTotal;
-    //     };
-    //     const final: number = couponTotal - maxPoints;
-
-    //     pointsLet = maxPoints;
-    //     finalLet = final;
-
-    //     setPoints(maxPoints);
-    //     setFinal(final);
-    // }, [total]);
+    // const postPurchase = async () => {
+    //     ;
+    // };
 
     return (
         <div>
@@ -83,7 +69,6 @@ export default function PurchaseForm({
                                             setTotal(total - normalPrice);
                                             setFinal(finalTotal - (normalPrice * (1 - (discount / 100))));
                                         };
-                                        // setFinal(totalLet * (1 - (discount / 100)));
                                         handleChange(e);
                                     }
                                 } values={values.normals} aria-label="Regular tickets number box"

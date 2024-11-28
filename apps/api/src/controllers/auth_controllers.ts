@@ -170,7 +170,7 @@ async function VerifyUser(req: Request, res: Response, next: NextFunction) {
                 },
             });
 
-            if (refCode !== "") {
+            if (refCode) {
                 console.log("referral code valid: adding referral code bonuses");
                 const findRefCode = await prisma.users.findUnique({
                     where: {
@@ -251,13 +251,15 @@ async function LoginUser(req: Request, res: Response, next: NextFunction) {
             const templatePath = path.join(
                 __dirname,
                 "../mailer/email_templates",
-                "registerOrganizer.hbs"
+                "registerUser.hbs"
             );
     
             const templateSource = fs.readFileSync(templatePath, "utf-8");
             const compiledTemplate = Handlebars.compile(templateSource);
-            const verifyURL: String = String(BASE_WEB_URL) + "/verifysignup" + "/" + token;
-            const html = compiledTemplate({ email, name, verifyURL });
+            const firstName = findUser.firstName;
+            const ln = findUser.lastName;
+            const verifyURL: String = String(BASE_WEB_URL) + "/verifysignup/user" + "/" + token;
+            const html = compiledTemplate({ email, firstName, ln, verifyURL });
     
             await transporter.sendMail({
                 to: email,
@@ -266,9 +268,7 @@ async function LoginUser(req: Request, res: Response, next: NextFunction) {
             });
             console.log("verification email sent");
 
-            res.status(500).send({
-                message: "A verification email has been sent. Please verify your email before you can log in."
-            });
+            throw new Error("Email not verified: A new verification email has been sent.");
         };
 
         const passwordMatches = await compare(password, findUser.password);
@@ -320,9 +320,6 @@ async function LoginUser(req: Request, res: Response, next: NextFunction) {
             role: "user",
             refCode: findUser.referralCode,
             pointBalance: findUser.pointBalance,
-            // pointHistory: findUser.codeUsed,
-            // transactionHistory: findUser.history,  // Non-refunded transactions only
-            // coupons: findUser.coupons,
         };
         const token = sign(payload, String(SECRET_KEY))
         console.log("token created")
@@ -641,7 +638,8 @@ async function LoginOrganizer(req: Request, res: Response, next: NextFunction) {
     
             const templateSource = fs.readFileSync(templatePath, "utf-8");
             const compiledTemplate = Handlebars.compile(templateSource);
-            const verifyURL: String = String(BASE_WEB_URL) + "/verifysignup" + "/" + token;
+            const name = findUser.name
+            const verifyURL: String = String(BASE_WEB_URL) + "/verifysignup/organizer" + "/" + token;
             const html = compiledTemplate({ email, name, verifyURL });
     
             await transporter.sendMail({
@@ -651,9 +649,7 @@ async function LoginOrganizer(req: Request, res: Response, next: NextFunction) {
             });
             console.log("verification email sent");
 
-            res.status(500).send({
-                message: "A verification email has been sent. Please verify your email before you can log in."
-            });
+            throw new Error("Email not verified: A new verification email has been sent.");
         };
 
         const payload = {
