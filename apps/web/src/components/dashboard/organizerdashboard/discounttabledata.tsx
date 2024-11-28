@@ -12,11 +12,11 @@ export default async function DiscountTableData({ event }: { event: Events }) {
 
     if (String(event.discountType) === "None") {
         return (
-            <div>-</div>
+            <div className="mx-auto">-</div>
         );
     } else if (String(event.discountType) === "Limited") {
         return (
-            <div className="flex flex-row gap-0">
+            <div className="flex flex-row gap-0 mx-auto">
                 <p>Limited: </p>
                 {discountData.limited?.map((item) => (
                     <p>{item.breakpoint}|{item.discount}% </p>
@@ -25,13 +25,13 @@ export default async function DiscountTableData({ event }: { event: Events }) {
         );
     } else if (String(event.discountType) === "Deadline") {
         return (
-            <div>
+            <div className="mx-auto">
                 Deadline: {new Date(discountData.deadline.deadline).toLocaleDateString()}|{discountData.deadline.discount}%
             </div>
         );
     } else if (String(event.discountType) === "LimitedDeadline") {
         return (
-            <div className="grid grid-cols-1 grid-rows-2">
+            <div className="grid grid-cols-1 grid-rows-2 mx-auto">
                 <div className="flex flex-row gap-0">
                     <p>Limited: </p>
                     {discountData.limited?.map((item) => (
