@@ -3,7 +3,7 @@ import { PrismaClient } from "@prisma/client";
 import { compare, genSalt, hash } from "bcrypt";
 import { sign } from "jsonwebtoken";
 import { BASE_WEB_URL, SECRET_KEY, SECRET_KEY2 } from "../config/index";
-import { Organizer } from "../custom.d";
+import { Organizer, User } from "../custom.d";
 import { transporter } from "../mailer/mail";
 import path from "path";
 import fs from "fs";
@@ -112,17 +112,75 @@ async function RegisterUser(req: Request, res: Response, next: NextFunction) {
                 }
             });
 
-            if (referralCode) {
-                console.log("referral code valid: added referral code bonuses");
+            console.log("prisma transaction successful: user data created");
+        });
+        
+        const templatePath = path.join(
+            __dirname,
+            "../mailer/email_templates",
+            "registerUser.hbs"
+        );
+        const templateSource = fs.readFileSync(templatePath, "utf-8");
+        const compiledTemplate = Handlebars.compile(templateSource);
+        let ln = lastName;
+        if (!lastName) {
+            ln = "";
+        };
+        const payload = {
+            email: email,
+            refCode: "",
+        };
+        if (referralCode) {
+            payload.refCode = referralCode;
+        };
+        const token = sign(payload, String(SECRET_KEY2), { expiresIn: "3hr" });
+        let verifyURL: String = String(BASE_WEB_URL) + "/verifysignup/user" + "/" + token;
+        const html = compiledTemplate({ email, firstName, ln, verifyURL });
+
+        await transporter.sendMail({
+            to: email,
+            subject: "ConcertHub Registration Confirmation",
+            html: html,
+        });
+        console.log("Email sent");
+    
+        console.log("User registration added to database");
+        res.status(200).send({
+            message: "Register successful!",
+            data: newUser,
+        });
+
+    } catch(err) {
+        next(err);
+    };
+};
+
+async function VerifyUser(req: Request, res: Response, next: NextFunction) {
+    try {
+        const { email, refCode } = req.user as User;
+        console.log("Email from JSON Web Token: " + email);
+        await prisma.$transaction(async (prisma) => {
+            console.log("prisma transaction started: verifying email in database");
+            const newUser = await prisma.users.update({
+                where: {
+                    email: email,
+                },
+                data: {
+                    emailVerified: true,
+                },
+            });
+
+            if (refCode) {
+                console.log("referral code valid: adding referral code bonuses");
                 const findRefCode = await prisma.users.findUnique({
                     where: {
-                        referralCode: referralCode,
+                        referralCode: refCode,
                     },
                 });
 
                 await prisma.coupons.create({
                     data: {
-                        code: referralCode,
+                        code: refCode,
                         userID: newUser.id,
                     },
                 });
@@ -151,37 +209,13 @@ async function RegisterUser(req: Request, res: Response, next: NextFunction) {
 
                 console.log("referral code bonuses added");
             };
-
-            console.log("prisma transaction successful: user data created");
-        });
-        
-        const templatePath = path.join(
-            __dirname,
-            "../mailer/email_templates",
-            "registerUser.hbs"
-        );
-        const templateSource = fs.readFileSync(templatePath, "utf-8");
-        const compiledTemplate = Handlebars.compile(templateSource);
-        let ln = lastName;
-        if (!lastName) {
-            ln = "";
-        };
-        const html = compiledTemplate({ email, firstName, ln });
-
-        await transporter.sendMail({
-            to: email,
-            subject: "ConcertHub Registration Confirmation",
-            html: html,
-        });
-        console.log("Email sent");
-    
-        console.log("User registration added to database");
-        res.status(200).send({
-            message: "Register successful!",
-            data: newUser,
+            console.log("prisma transaction ended: emailVerified updated in database");
         });
 
-    } catch(err) {
+        res.status(201).send({
+            message: "Email verified",
+        });
+    } catch (err) {
         next(err);
     };
 };
@@ -194,11 +228,6 @@ async function LoginUser(req: Request, res: Response, next: NextFunction) {
             where: {
                 email: email,
             },
-            // include: {
-            //     history: true,
-            //     codeUsed: true,
-            //     coupons: true,
-            // },
         });
         if (!findUser) {
             console.log("email not found in database");
@@ -209,6 +238,37 @@ async function LoginUser(req: Request, res: Response, next: NextFunction) {
         if (findUser.active === "Locked") {
             console.log("Account locked: Too many failed logins")
             throw new Error("Account locked: Please contact an administrator");
+        };
+
+        if (findUser.emailVerified === false) {
+            console.log("email not verified. attempting to resend verification email")
+
+            const emailpayload = {
+                email: email
+            };
+            const token = sign(emailpayload, String(SECRET_KEY2), { expiresIn: "3hr" });
+            
+            const templatePath = path.join(
+                __dirname,
+                "../mailer/email_templates",
+                "registerUser.hbs"
+            );
+    
+            const templateSource = fs.readFileSync(templatePath, "utf-8");
+            const compiledTemplate = Handlebars.compile(templateSource);
+            const firstName = findUser.firstName;
+            const ln = findUser.lastName;
+            const verifyURL: String = String(BASE_WEB_URL) + "/verifysignup/user" + "/" + token;
+            const html = compiledTemplate({ email, firstName, ln, verifyURL });
+    
+            await transporter.sendMail({
+                to: email,
+                subject: "ConcertHub Organizer Registration Confirmation",
+                html: html,
+            });
+            console.log("verification email sent");
+
+            throw new Error("Email not verified: A new verification email has been sent.");
         };
 
         const passwordMatches = await compare(password, findUser.password);
@@ -260,17 +320,17 @@ async function LoginUser(req: Request, res: Response, next: NextFunction) {
             role: "user",
             refCode: findUser.referralCode,
             pointBalance: findUser.pointBalance,
-            // pointHistory: findUser.codeUsed,
-            // transactionHistory: findUser.history,  // Non-refunded transactions only
-            // coupons: findUser.coupons,
         };
-        const token = sign(payload, String(SECRET_KEY), { expiresIn: 1200 })
+        const token = sign(payload, String(SECRET_KEY))
         console.log("token created")
 
         // throw new Error("test complete");
 
         console.log("login successful: access token cookied")
-        res.status(200).cookie("access_token", token, { expires: new Date(new Date().valueOf() + 1200000) }).send({
+        res.status(200)
+        .cookie("access_token", token, { expires: new Date(new Date().valueOf() + 2400000) })
+        // .cookie("access_token_session", token)  // Session cookie
+        .send({
             message: "Login successful!",
         });
 
@@ -403,6 +463,59 @@ async function GetEventDataByEventID(req: Request, res: Response, next: NextFunc
     };
 };
 
+async function GetEventDataByOrganizerID(req: Request, res: Response, next: NextFunction) {
+    try {
+        const { id } = req.params;
+        const { page, pageSize } = req.query;
+        const filter: {page: number; pageSize: number} = {
+            page: parseInt(String(page)) || 1,
+            pageSize: parseInt(String(pageSize)) || 20
+        };
+
+        const findEvents = await prisma.events.findMany({
+            where: {
+                organizerID: parseInt(id),
+            },
+            skip: filter.page != 1 ? (filter.page - 1) * filter.pageSize : 0,
+            take: filter.pageSize,
+        });
+
+        if (!findEvents) {
+            throw new Error("Organizer ID not found");
+        };
+
+        res.status(200).send({
+            message: "Event details retrieved",
+            data: findEvents,
+        });
+    } catch (err) {
+        next(err);
+    };
+};
+
+async function GetTransactionDataByEventID(req: Request, res: Response, next: NextFunction) {
+    try {
+        const { id } = req.params;
+
+        const findTransactions = await prisma.transactions.findMany({
+            where: {
+                eventID: parseInt(id),
+            },
+        });
+
+        if (!findTransactions) {
+            throw new Error("Event ID not found");
+        };
+
+        res.status(200).send({
+            message: "Transaction details retrieved",
+            data: findTransactions,
+        });
+    } catch (err) {
+        next(err);
+    };
+};
+
 async function RegisterOrganizer(req: Request, res: Response, next: NextFunction) {
     try {
         const { email, name, password } = req.body;
@@ -439,7 +552,7 @@ async function RegisterOrganizer(req: Request, res: Response, next: NextFunction
         const payload = {
             email: email
         };
-        const token = sign(payload, String(SECRET_KEY2))  // no expiration
+        const token = sign(payload, String(SECRET_KEY2), { expiresIn: "3hr" });
         
         const templatePath = path.join(
             __dirname,
@@ -449,7 +562,7 @@ async function RegisterOrganizer(req: Request, res: Response, next: NextFunction
 
         const templateSource = fs.readFileSync(templatePath, "utf-8");
         const compiledTemplate = Handlebars.compile(templateSource);
-        const verifyURL: String = String(BASE_WEB_URL) + "/verifysignup" + "/" + token;
+        const verifyURL: String = String(BASE_WEB_URL) + "/verifysignup/organizer" + "/" + token;
         const html = compiledTemplate({ email, name, verifyURL });
 
         await transporter.sendMail({
@@ -538,7 +651,7 @@ async function LoginOrganizer(req: Request, res: Response, next: NextFunction) {
             const emailpayload = {
                 email: email
             };
-            const token = sign(emailpayload, String(SECRET_KEY2))  // no expiration
+            const token = sign(emailpayload, String(SECRET_KEY2), { expiresIn: "3hr" });
             
             const templatePath = path.join(
                 __dirname,
@@ -548,7 +661,8 @@ async function LoginOrganizer(req: Request, res: Response, next: NextFunction) {
     
             const templateSource = fs.readFileSync(templatePath, "utf-8");
             const compiledTemplate = Handlebars.compile(templateSource);
-            const verifyURL: String = String(BASE_WEB_URL) + "/verifysignup" + "/" + token;
+            const name = findUser.name
+            const verifyURL: String = String(BASE_WEB_URL) + "/verifysignup/organizer" + "/" + token;
             const html = compiledTemplate({ email, name, verifyURL });
     
             await transporter.sendMail({
@@ -558,9 +672,7 @@ async function LoginOrganizer(req: Request, res: Response, next: NextFunction) {
             });
             console.log("verification email sent");
 
-            res.status(200).send({
-                message: "A verification email has been sent. Please verify your email before you can log in."
-            });
+            throw new Error("Email not verified: A new verification email has been sent.");
         };
 
         const payload = {
@@ -569,13 +681,16 @@ async function LoginOrganizer(req: Request, res: Response, next: NextFunction) {
             name: findUser.name,
             role: "organizer",
         };
-        const token = sign(payload, String(SECRET_KEY), { expiresIn: 1200 })
+        const token = sign(payload, String(SECRET_KEY))
         console.log("token created")
 
         // throw new Error("test complete");
 
         console.log("login successful: access token cookied")
-        res.status(200).cookie("access_token", token, { expires: new Date(new Date().valueOf() + 1200000) }).send({
+        res.status(200)
+        .cookie("access_token", token, { expires: new Date(new Date().valueOf() + 2400000) })
+        // .cookie("access_token_session", token)  // Session cookie
+        .send({
             message: "Login successful!",
         });
 
@@ -656,8 +771,147 @@ async function GetOrganizerNameByID(req: Request, res: Response, next: NextFunct
 //     };
 // };
 
+async function GetEventDiscountDataByEventID(req: Request, res: Response, next: NextFunction) {
+    try {
+        const { id } = req.params;
+        if (!id) {
+            throw new Error("ID error!")
+        };
+
+        const findEvent = await prisma.events.findUnique({
+            where: {
+                id: parseInt(id),
+            },
+            include: {
+                discountLimited: true,
+                discountDeadline: true,
+            },
+        });
+
+        if (!findEvent) {
+            throw new Error("ID not found!");
+        };
+
+        res.status(200).send({
+            message: "Discount data retrieved",
+            data: {limited: findEvent.discountLimited, deadline: findEvent.discountDeadline},
+        });
+
+    } catch (err) {
+        next(err);
+    };
+};
+
+async function GetRatingsDataByEventID(req: Request, res: Response, next: NextFunction) {
+    try {
+        const { id } = req.params;
+        if (!id) {
+            throw new Error("ID error!")
+        };
+
+        const findRatings = await prisma.event_Ratings.findMany({
+            where: {
+                eventID: parseInt(id),
+            },
+        });
+
+        if (!findRatings) {
+            throw new Error("EventID not found!");
+        };
+
+        res.status(200).send({
+            message: "Ratings retrieved",
+            data: findRatings,
+        });
+
+    } catch (err) {
+        next(err);
+    };
+};
+
+async function GetOrganizerDataByOrganizerID(req: Request, res: Response, next: NextFunction) {
+    try {
+        const { id } = req.params;
+        if (!id) {
+            throw new Error("ID error!")
+        };
+
+        const findOrganizer = await prisma.organizers.findUnique({
+            where: {
+                id: parseInt(id),
+            },
+        });
+
+        if (!findOrganizer) {
+            throw new Error("OrganizerID not found!");
+        };
+
+        res.status(200).send({
+            message: "Organizer retrieved",
+            data: findOrganizer,
+        });
+
+    } catch (err) {
+        next(err);
+    };
+};
+
+async function RegisterEventByOrganizerID(req: Request, res: Response, next: NextFunction) {
+    try {
+        const { id } = req.params;
+        const {
+            image,
+            title,
+            eventDate,
+            overview,
+            genre,
+            venue,
+            eventDesc,
+            maxNormals,
+            maxVIPs,
+            normalPrice,
+            VIPPrice,
+            discountType
+        } = req.body;
+        
+        let newEvent;
+
+        await prisma.$transaction(async (prisma) => {
+            console.log("prisma transaction started: creating event data");
+            newEvent = await prisma.events.create({
+                data: {
+                    image: image,
+                    title: title,
+                    eventDate: new Date(eventDate),
+                    overview: overview,
+                    genre: genre,
+                    venue: venue,
+                    eventDesc: eventDesc,
+                    maxNormals: maxNormals,
+                    maxVIPs: maxVIPs,
+                    normalPrice: normalPrice,
+                    VIPPrice: VIPPrice,
+                    discountType: discountType,
+                    organizerID: parseInt(id),
+                },
+            });
+            console.log("prisma transaction concluded: event data created");
+        });
+    
+        console.log("Event registration added to database");
+        res.status(200).send({
+            message: "Event creation successful!",
+            data: newEvent,
+        });
+
+    } catch(err) {
+        next(err);
+    };
+};
+
 export {
     RegisterUser,
+    VerifyUser,
     LoginUser,
     GetCouponDataByUserID,
     GetPointDataByUserID,
@@ -667,7 +921,13 @@ export {
     LoginOrganizer,
     GetOrganizerNameByID,
     GetEventDataByEventID,
+    GetEventDataByOrganizerID,
     GetTransactionDataByTransactionID,
+    GetTransactionDataByEventID,
+    GetEventDiscountDataByEventID,
+    GetRatingsDataByEventID,
+    GetOrganizerDataByOrganizerID,
+    RegisterEventByOrganizerID,
     // UploaderAssist,
     // UploadUpdate,
 };

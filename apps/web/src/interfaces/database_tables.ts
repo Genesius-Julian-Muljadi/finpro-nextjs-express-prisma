@@ -1,3 +1,15 @@
+interface Organizers {
+    id: number;
+    name: string;
+    email: string;
+    password: string;
+    failedLogins: number;
+    active: string;
+    emailVerified: true;
+    dateCreated: Date;
+    updated: Date;
+};
+
 interface History {
     id: number;
     userID: number;
@@ -36,13 +48,15 @@ interface Events {
     genre: string;
     venue: string;
     eventDesc: string;
-    maxUsers: number;
-    ticketsSold: number;
+    maxNormals: number | null;
     maxVIPs: number;
-    VIPPrice: number | null;
+    normalsSold: number;
+    VIPsSold: number;
     normalPrice: number;
+    VIPPrice: number | null;
     discountType: string;
     ratingAvg: number | null;
+    revenue: number;
     dateCreated: Date;
     updated: Date;
 };
@@ -63,10 +77,36 @@ interface Transactions {
     dateCreated: Date;
 };
 
+interface Events_Discounts_Limited {
+    id: number;
+    eventID: number;
+    breakpoint: number;
+    discount: number;
+};
+
+interface Events_Discounts_Deadline {
+    id: number;
+    eventID: number;
+    deadline: Date;
+    discount: number;
+};
+
+interface Event_Ratings {
+    id: number;
+    eventID: number;
+    rating: number;
+    feedback: string;
+    dateCreated: Date;
+};
+
 export type {
+    Organizers,
     History,
     Point_Balance,
     Coupons,
     Events,
     Transactions,
+    Events_Discounts_Limited,
+    Events_Discounts_Deadline,
+    Event_Ratings,
 };

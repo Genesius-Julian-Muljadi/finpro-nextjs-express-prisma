@@ -11,8 +11,8 @@ export default function InvalidEvent() {
     })
 
     return (
-        <div>
-            <div>Invalid event ID</div>
+        <div className="flex">
+            <div className="m-auto">Invalid event ID</div>
         </div>
     );
 };

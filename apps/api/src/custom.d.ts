@@ -1,5 +1,6 @@
 export type User = {
     email: string;
+    refCode: string;
 };
 
 export type Organizer = {

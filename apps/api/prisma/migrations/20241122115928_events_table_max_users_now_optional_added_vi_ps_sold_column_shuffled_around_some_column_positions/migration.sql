@@ -1,0 +1,3 @@
+-- AlterTable
+ALTER TABLE `events` ADD COLUMN `VIPsSold` INTEGER NOT NULL DEFAULT 0,
+    MODIFY `maxUsers` INTEGER NULL;
