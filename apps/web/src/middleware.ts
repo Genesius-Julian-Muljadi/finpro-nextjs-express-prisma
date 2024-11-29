@@ -10,7 +10,6 @@ const protectedRoutes = ["/events/purchase", "/dashboard"];
 export default async function middleware(req: NextRequest) {
   try {
     const cookieStore = await cookies();
-    console.log("middleware hello");
     const isProtected = protectedRoutes.some((path) =>
       req.nextUrl.pathname.startsWith(path)
     );

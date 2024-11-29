@@ -1,3 +1,15 @@
+interface Organizers {
+    id: number;
+    name: string;
+    email: string;
+    password: string;
+    failedLogins: number;
+    active: string;
+    emailVerified: true;
+    dateCreated: Date;
+    updated: Date;
+};
+
 interface History {
     id: number;
     userID: number;
@@ -44,6 +56,7 @@ interface Events {
     VIPPrice: number | null;
     discountType: string;
     ratingAvg: number | null;
+    revenue: number;
     dateCreated: Date;
     updated: Date;
 };
@@ -87,6 +100,7 @@ interface Event_Ratings {
 };
 
 export type {
+    Organizers,
     History,
     Point_Balance,
     Coupons,

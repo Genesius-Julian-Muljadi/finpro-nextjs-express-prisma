@@ -1,5 +1,5 @@
 import { AccessTokenOrganizer } from "@/interfaces/accesstokens";
-import { Events } from "@/interfaces/database_tables";
+import { Events, Organizers } from "@/interfaces/database_tables";
 import axios from "axios";
 import DiscountTableData from "./discounttabledata";
 import GlobalStatsProvider from "./statistics/global/globalstatsprovider";
@@ -11,6 +11,13 @@ export default async function OrganizerDashboard({ token }: { token: AccessToken
         token.id
     );
     const eventData: Array<Events> = data.data.data;
+
+    const data2 = await axios.get(
+        process.env.NEXT_PUBLIC_BASE_API_URL +
+        "/auth/organizerorganizer/" +
+        token.id
+    );
+    const organizerData: Organizers = data2.data.data;
 
     return (
         <div className="flex mx-2 sm:mx-6">
@@ -40,13 +47,13 @@ export default async function OrganizerDashboard({ token }: { token: AccessToken
                                         <div>Tickets Sold</div>
                                         <div>Normal, VIP</div>
                                     </th>
-                                    <th>
+                                    <th className="hidden sm:table-cell">
                                         <div>Prices</div>
                                         <div>Normal, VIP</div>
                                     </th>
-                                    <th>Discounts</th>
-                                    <th>Rating</th>
-                                    <th>Date Created</th>
+                                    <th className="hidden sm:table-cell">Discounts</th>
+                                    <th className="hidden sm:table-cell">Rating</th>
+                                    <th className="hidden sm:table-cell">Date Created</th>
                                 </tr>
                             </thead>
                             <tbody>
@@ -72,19 +79,21 @@ export default async function OrganizerDashboard({ token }: { token: AccessToken
                                             <div>{item.normalsSold}/{item.maxNormals} ,</div>
                                             <div>{item.VIPsSold}/{item.maxVIPs}</div>
                                         </td>
-                                        <td>
+                                        <td className="hidden sm:table-cell">
                                             <div>{item.normalPrice} ,</div>
                                             <div>{item.VIPPrice}</div>
                                         </td>
-                                        <td>
+                                        <td className="hidden sm:table-cell">
                                             <DiscountTableData event={item} />
                                         </td>
-                                        <td>
+                                        <td className="hidden sm:table-cell">
                                             {new Date().valueOf() <= new Date(item.eventDate).valueOf() || !item.ratingAvg ?
                                             "-" :
                                             item.ratingAvg}
                                         </td>
-                                        <td>{new Date(item.dateCreated).toLocaleDateString()}</td>
+                                        <td className="hidden sm:table-cell">
+                                            {new Date(item.dateCreated).toLocaleDateString()}
+                                        </td>
                                     </tr>
                                 ))}
                             </tbody>
@@ -94,7 +103,7 @@ export default async function OrganizerDashboard({ token }: { token: AccessToken
                 <div id="organizerdashboardcouponsdiv">
                     Coupons
                 </div>
-                <GlobalStatsProvider events={eventData} />
+                <GlobalStatsProvider events={eventData} organizer={organizerData} />
             </div>
         </div>
     );

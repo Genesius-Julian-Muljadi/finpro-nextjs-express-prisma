@@ -829,6 +829,33 @@ async function GetRatingsDataByEventID(req: Request, res: Response, next: NextFu
     };
 };
 
+async function GetOrganizerDataByOrganizerID(req: Request, res: Response, next: NextFunction) {
+    try {
+        const { id } = req.params;
+        if (!id) {
+            throw new Error("ID error!")
+        };
+
+        const findOrganizer = await prisma.organizers.findUnique({
+            where: {
+                id: parseInt(id),
+            },
+        });
+
+        if (!findOrganizer) {
+            throw new Error("OrganizerID not found!");
+        };
+
+        res.status(200).send({
+            message: "Organizer retrieved",
+            data: findOrganizer,
+        });
+
+    } catch (err) {
+        next(err);
+    };
+};
+
 async function RegisterEventByOrganizerID(req: Request, res: Response, next: NextFunction) {
     try {
         const { id } = req.params;
@@ -899,6 +926,7 @@ export {
     GetTransactionDataByEventID,
     GetEventDiscountDataByEventID,
     GetRatingsDataByEventID,
+    GetOrganizerDataByOrganizerID,
     RegisterEventByOrganizerID,
     // UploaderAssist,
     // UploadUpdate,

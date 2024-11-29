@@ -6,10 +6,14 @@ import { toggleMenu } from "@/redux/slices/togglemenu";
 import { useEffect } from "react";
 import LoginForm from "./loginform";
 import { selectLoginRole } from "@/redux/slices/loginroleselect";
+import { useRouter } from "next/navigation";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { faX } from "@fortawesome/free-solid-svg-icons";
 
 export default function LoginMenu() {
     let n = useSelector((state: {LRSSlice: {actionSelected: number}}) => state.LRSSlice.actionSelected);
     const dispatch = useDispatch();
+    const router = useRouter();
 
     useEffect(() => {
         const menu = document.getElementById("loginformdiv") as HTMLDivElement;
@@ -34,8 +38,21 @@ export default function LoginMenu() {
         };
     });
 
+
     return (
         <div className="fixed hidden h-screen w-screen bg-slate-600 bg-opacity-25 grid-rows-1 grid-cols-1" id="loginmenudiv">
+            {window.location.href.startsWith(process.env.NEXT_PUBLIC_BASE_WEB_URL + "/login") ?
+            <div className="fixed ml-[75vw] mt-20 cursor-pointer text-4xl"
+            onClick={() => {
+                const menu = document.getElementById("loginmenudiv") as HTMLDivElement;
+                menu.style.display = "none";
+                router.push("/");
+                dispatch(toggleMenu('reset'));
+            }}>
+                <FontAwesomeIcon icon={faX} style={{color: "#6b6b6b",}} 
+                className="" />
+            </div> :
+            null}
             <div className="col-start-1 col-end-2 row-start-1 row-end-2" onClick={() => dispatch(toggleMenu('reset'))}></div>
             <div className="col-start-1 col-end-2 row-start-1 row-end-2 my-auto mx-2 sm:mx-auto h-[480px] max-w-full sm:w-[640px] shadow-sm shadow-slate-700 bg-neutral-100 place-content-center" aria-label="Login Menu">
                 <div className="mx-2 sm:mx-4 my-2 flex flex-col gap-4">

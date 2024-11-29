@@ -103,6 +103,7 @@ model Events {
   VIPPrice Int?
   discountType DiscountTypes @default(None)
   ratingAvg Float?
+  revenue Int @default(0)
   dateCreated DateTime @default(now())
   updated DateTime @updatedAt
   transactions Transactions[]
