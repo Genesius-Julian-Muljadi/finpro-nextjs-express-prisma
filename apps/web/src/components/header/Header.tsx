@@ -15,7 +15,7 @@ export function Header() {
   return (
     <Provider store={store}>
       <div className="grid grid-cols-1 grid-rows-1 mb-20 z-[49]">
-        <div className="fixed h-9 w-screen px-4 sm:h-12 col-start-1 row-start-1 bg-blue-300 shadow-sm shadow-gray-700 grid grid-cols-12 grid-rows-1 *:border *:border-black *:my-auto *:text-center">
+        <div className="fixed h-9 w-screen sm:px-2 sm:h-12 col-start-1 row-start-1 bg-blue-300 shadow-sm shadow-gray-700 grid grid-cols-12 grid-rows-1 *:border *:border-black *:my-auto *:text-center">
           <div className="col-start-1 col-end-3 row-start-1 row-end-2 cursor-pointer" aria-label="Concert Hub Logo"
           onClick={() => {router.push("/")}}>
             ConcertHub logo

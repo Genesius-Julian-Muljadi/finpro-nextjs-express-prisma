@@ -1,5 +1,5 @@
 import { Router } from "express";
-import { GetCouponDataByUserID, GetEventDataByEventID, GetEventDataByOrganizerID, GetEventDiscountDataByEventID, GetHistoryDataByUserID, GetOrganizerNameByID, GetPointDataByUserID, GetTransactionDataByTransactionID, LoginOrganizer, LoginUser, RegisterEventByOrganizerID, RegisterOrganizer, RegisterUser, VerifyOrganizer, VerifyUser } from "../controllers/auth_controllers";
+import { GetCouponDataByUserID, GetEventDataByEventID, GetEventDataByOrganizerID, GetEventDiscountDataByEventID, GetHistoryDataByUserID, GetOrganizerNameByID, GetPointDataByUserID, GetRatingsDataByEventID, GetTransactionDataByEventID, GetTransactionDataByTransactionID, LoginOrganizer, LoginUser, RegisterEventByOrganizerID, RegisterOrganizer, RegisterUser, VerifyOrganizer, VerifyUser } from "../controllers/auth_controllers";
 import { RegisterValidationOrganizer, RegisterValidationUser } from "../middlewares/validations/auth_validation";
 import { VerifyTokenOrganizerSignup, VerifyTokenUserSignup } from "../middlewares/auth_middleware";
 
@@ -14,7 +14,9 @@ router.get("/historyuser/:id", GetHistoryDataByUserID);
 router.get("/eventevent/:id", GetEventDataByEventID);
 router.get("/eventorganizer/:id", GetEventDataByOrganizerID);
 router.get("/transactiontransaction/:id", GetTransactionDataByTransactionID);
+router.get("/transactionevent/:id", GetTransactionDataByEventID);
 router.get("/eventdiscount/:id", GetEventDiscountDataByEventID);
+router.get("/ratingsevent/:id", GetRatingsDataByEventID);
 // router.post("/upload", VerifyToken, SingleUploader("AVT", "/thisfolder"), UploadUpdate);
 router.post("/registerorganizer", RegisterValidationOrganizer, RegisterOrganizer);
 router.post("/verify", VerifyTokenOrganizerSignup, VerifyOrganizer);

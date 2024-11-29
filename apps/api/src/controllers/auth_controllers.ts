@@ -493,6 +493,29 @@ async function GetEventDataByOrganizerID(req: Request, res: Response, next: Next
     };
 };
 
+async function GetTransactionDataByEventID(req: Request, res: Response, next: NextFunction) {
+    try {
+        const { id } = req.params;
+
+        const findTransactions = await prisma.transactions.findMany({
+            where: {
+                eventID: parseInt(id),
+            },
+        });
+
+        if (!findTransactions) {
+            throw new Error("Event ID not found");
+        };
+
+        res.status(200).send({
+            message: "Transaction details retrieved",
+            data: findTransactions,
+        });
+    } catch (err) {
+        next(err);
+    };
+};
+
 async function RegisterOrganizer(req: Request, res: Response, next: NextFunction) {
     try {
         const { email, name, password } = req.body;
@@ -779,6 +802,33 @@ async function GetEventDiscountDataByEventID(req: Request, res: Response, next: 
     };
 };
 
+async function GetRatingsDataByEventID(req: Request, res: Response, next: NextFunction) {
+    try {
+        const { id } = req.params;
+        if (!id) {
+            throw new Error("ID error!")
+        };
+
+        const findRatings = await prisma.event_Ratings.findMany({
+            where: {
+                eventID: parseInt(id),
+            },
+        });
+
+        if (!findRatings) {
+            throw new Error("EventID not found!");
+        };
+
+        res.status(200).send({
+            message: "Ratings retrieved",
+            data: findRatings,
+        });
+
+    } catch (err) {
+        next(err);
+    };
+};
+
 async function RegisterEventByOrganizerID(req: Request, res: Response, next: NextFunction) {
     try {
         const { id } = req.params;
@@ -796,19 +846,6 @@ async function RegisterEventByOrganizerID(req: Request, res: Response, next: Nex
             VIPPrice,
             discountType
         } = req.body;
-        console.log("Request body received");
-        console.log(image);
-        console.log(title);
-        console.log(new Date(eventDate));
-        console.log(overview);
-        console.log(genre);
-        console.log(venue);
-        console.log(eventDesc);
-        console.log(maxNormals);
-        console.log(maxVIPs);
-        console.log(normalPrice);
-        console.log(VIPPrice);
-        console.log(discountType);
         
         let newEvent;
 
@@ -859,7 +896,9 @@ export {
     GetEventDataByEventID,
     GetEventDataByOrganizerID,
     GetTransactionDataByTransactionID,
+    GetTransactionDataByEventID,
     GetEventDiscountDataByEventID,
+    GetRatingsDataByEventID,
     RegisterEventByOrganizerID,
     // UploaderAssist,
     // UploadUpdate,

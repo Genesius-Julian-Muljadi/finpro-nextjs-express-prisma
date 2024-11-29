@@ -180,7 +180,7 @@ model Event_Ratings {
   eventID Int
   event Events @relation(fields: [eventID], references: [id])
   rating Int  // Should be 1, 2, 3, 4, 5 only
-  feedback String?  // Includes overall feedback, event quality, and suggestions
+  feedback String @default("")  // Includes overall feedback, event quality, and suggestions
   dateCreated DateTime @default(now())
 }
 

@@ -27,7 +27,7 @@ export default function GlobalStatistics({ events }: { events: Array<Events> }) 
             <button className="my-auto text-left h-12 px-4" onClick={OpenAllCharts}>
                 Global Statistics
             </button>
-            <div className="hidden grid-cols-3 grid-rows-1 gap-1 w-full p-4 border border-green-700 *:mx-auto *:border *:border-blue-700" id="globalchartsdiv">
+            <div className="hidden grid-cols-3 grid-rows-1 gap-1 w-full p-4 border border-green-700 *:mx-auto" id="globalchartsdiv">
                 <GlobalTicketsSold events={events} />
                 <GlobalRevenue events={events} />
                 <GlobalRatings events={events} />

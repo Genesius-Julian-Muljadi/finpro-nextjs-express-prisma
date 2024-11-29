@@ -1,4 +1,4 @@
-import DashboardEventPageByIDView from "@/components/dashboard/organizerdashboard/statistics/single";
+import DashboardEventPageByIDView from "@/components/dashboard/organizerdashboard/statistics/singles";
 
 
 export default async function DashboardEventPageByID({ params }: { params: Promise<{ eventid: string }> }) {

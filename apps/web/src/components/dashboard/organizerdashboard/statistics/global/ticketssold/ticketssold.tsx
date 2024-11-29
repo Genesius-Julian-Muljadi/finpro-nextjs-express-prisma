@@ -56,7 +56,7 @@ export default function GlobalTicketsSold({ events }: { events: Array<Events> })
                 enable: false,
             },
             type: "bar",
-            height: "180px",
+            height: 180,
             fontFamily: "Inter, sans-serif",
             toolbar: {
                 show: false,
@@ -108,6 +108,7 @@ export default function GlobalTicketsSold({ events }: { events: Array<Events> })
         },
         xaxis: {
             floating: false,
+            tickPlacement: 'on',
             labels: {
                 show: true,
                 style: {
@@ -116,10 +117,14 @@ export default function GlobalTicketsSold({ events }: { events: Array<Events> })
                 },
             },
             axisBorder: {
-                show: false,
+                show: true,
+                borderType: 'solid',
+                color: 'black',
             },
             axisTicks: {
-                show: false,
+                show: true,
+                borderType: 'solid',
+                color: '#999999',
             },
         },
         yaxis: {
@@ -154,7 +159,7 @@ export default function GlobalTicketsSold({ events }: { events: Array<Events> })
             <div className="m-auto font-semibold">
                 Tickets Sold
             </div>
-            <div className="border border-black" id="ticket-chart" />
+            <div className="border border-black px-4 pt-[0.15rem]" id="ticket-chart" />
         </div>
     );
 };

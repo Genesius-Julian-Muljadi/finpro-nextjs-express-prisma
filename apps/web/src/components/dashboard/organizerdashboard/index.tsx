@@ -5,7 +5,11 @@ import DiscountTableData from "./discounttabledata";
 import GlobalStatsProvider from "./statistics/global/globalstatsprovider";
 
 export default async function OrganizerDashboard({ token }: { token: AccessTokenOrganizer }) {
-    const data = await axios.get(process.env.NEXT_PUBLIC_BASE_API_URL + "/auth/eventorganizer/" + token.id);
+    const data = await axios.get(
+        process.env.NEXT_PUBLIC_BASE_API_URL +
+        "/auth/eventorganizer/" +
+        token.id
+    );
     const eventData: Array<Events> = data.data.data;
 
     return (
@@ -51,13 +55,13 @@ export default async function OrganizerDashboard({ token }: { token: AccessToken
                                         <td>
                                             <div>
                                                 <a href={`${String(process.env.NEXT_PUBLIC_BASE_WEB_URL)}/events/${item.id}`}
-                                                className="underline text-blue-600">
+                                                className="underline text-blue-600 hover:text-black">
                                                     {item.title}
                                                 </a>
                                             </div>
                                             <div>
                                                 <a href={`${String(process.env.NEXT_PUBLIC_BASE_WEB_URL)}/dashboard/events/${item.id}`}
-                                                className="underline text-blue-600">
+                                                className="underline text-blue-600 hover:text-black">
                                                     Stats
                                                 </a>
                                             </div>

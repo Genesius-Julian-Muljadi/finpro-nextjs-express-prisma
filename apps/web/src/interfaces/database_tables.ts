@@ -78,6 +78,14 @@ interface Events_Discounts_Deadline {
     discount: number;
 };
 
+interface Event_Ratings {
+    id: number;
+    eventID: number;
+    rating: number;
+    feedback: string;
+    dateCreated: Date;
+};
+
 export type {
     History,
     Point_Balance,
@@ -86,4 +94,5 @@ export type {
     Transactions,
     Events_Discounts_Limited,
     Events_Discounts_Deadline,
+    Event_Ratings,
 };
