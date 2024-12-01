@@ -1,2 +1,0 @@
--- AlterTable
-ALTER TABLE `events` ADD COLUMN `revenue` INTEGER NOT NULL DEFAULT 0;

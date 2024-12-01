@@ -12,8 +12,6 @@ import Handlebars from "handlebars";
 const prisma = new PrismaClient();
 
 async function RegisterUser(req: Request, res: Response, next: NextFunction) {
-    // Don't forget to add input validation!
-    // Currently has no such validation
     try {
         const { email, firstName, lastName, password, referralCode } = req.body;
         console.log("Request body received: " + email + " " + firstName + " " + lastName + " " + "some password");

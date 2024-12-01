@@ -2,6 +2,7 @@ import { object, string } from "yup";
 
 const SignupSchemaUser = object({
     firstName: string()
+        .notOneOf(['admin'], "First name cannot be admin")
         .min(2, "First name must contain at least 2 characters.")
         .max(30, "First name cannot exceed 30 characters.")
         .required("First name is required."),
@@ -26,6 +27,7 @@ const SignupSchemaUser = object({
 
 const SignupSchemaOrganizer = object({
     name: string()
+        .notOneOf(['admin'], "Name cannot be admin")
         .min(2, "Name must contain at least 2 characters.")
         .max(30, "Name cannot exceed 30 characters.")
         .required("Name is required."),

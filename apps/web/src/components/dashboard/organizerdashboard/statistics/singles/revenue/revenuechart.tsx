@@ -171,7 +171,7 @@ class SingleRevenue extends Component<{
       return (
         <div className="app">
           <div className="row">
-            <div className="text-center font-semibold">Revenue: Rp {this.total.toLocaleString("id-ID")},00</div>
+            <div className="text-center font-semibold">Revenue (x1.000): Rp {this.total.toLocaleString("id-ID")},00</div>
           </div>
           <div className="row">
             <div className="mixed-chart">
