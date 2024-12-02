@@ -3,6 +3,7 @@ import { Inter } from 'next/font/google';
 import './globals.css';
 import { Header } from '@/components/header/Header';
 import { Footer } from '@/components/footer/Footer';
+import Script from 'next/script';
 
 const inter = Inter({ subsets: ['latin'] });
 
@@ -22,7 +23,7 @@ export default function RootLayout({
         <Header />
         {children}
         <Footer />
-        <script src="../path/to/flowbite/dist/flowbite.min.js"></script>
+        <Script src="../path/to/flowbite/dist/flowbite.min.js"></Script>
       </body>
     </html>
   );

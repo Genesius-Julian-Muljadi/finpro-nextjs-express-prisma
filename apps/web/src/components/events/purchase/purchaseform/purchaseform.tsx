@@ -32,11 +32,7 @@ export default function PurchaseForm({
         } else {
             setPoints(points);
         };
-    }, [total, finalTotal, discount]);
-
-    // const postPurchase = async () => {
-    //     ;
-    // };
+    }, [total, finalTotal, discount, points]);
 
     return (
         <div>
