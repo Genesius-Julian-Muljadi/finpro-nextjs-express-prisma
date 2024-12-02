@@ -12,6 +12,7 @@ interface IState {
           show: boolean;
         };
       };
+      tooltip?: Object;
       xaxis: {
         categories: Array<string>;
         tickPlacement: string;
@@ -21,6 +22,7 @@ interface IState {
           show: boolean;
           rotate: number;
           rotateAlways: boolean;
+          style?: Object;
         };
       };
     };
@@ -49,6 +51,15 @@ class SingleNormalsSold extends Component<{
             id: "basic-bar",
             toolbar: {
                 show: false,
+            },
+          },
+          tooltip: {
+            enabled: true,
+            x: {
+              show: false,
+              formatter: (val: string) => {
+                return this.categoryData[this.categoryData.findIndex((item) => item === val)];
+              },
             },
           },
           xaxis: {
@@ -87,7 +98,7 @@ class SingleNormalsSold extends Component<{
 
       const transactionData = transactions.filter((item) => {
         const dateVal = Math.floor(new Date(item.dateCreated).valueOf() / (1000 * 60 * 60 * 24));
-        if (capVal - dateVal <= days - 1) {
+        if (capVal - dateVal <= days - 1 && capVal - dateVal >= 0) {
             return true;
         } else {
             return false;
@@ -99,7 +110,9 @@ class SingleNormalsSold extends Component<{
       };
       for (let k in transactionData) {
         const dateVal = Math.floor(new Date(transactionData[k].dateCreated).valueOf() / (1000 * 60 * 60 * 24));
-        this.seriesData[(days - 1) - (capVal - dateVal)] += transactionData[k].ticketCount - transactionData[k].VIPs;
+        if (capVal - dateVal >= 0) {
+          this.seriesData[(days - 1) - (capVal - dateVal)] += transactionData[k].ticketCount - transactionData[k].VIPs;
+        };
       };
 
       for (let i = 0; i < days; i++) {
@@ -115,6 +128,15 @@ class SingleNormalsSold extends Component<{
                 show: false,
             },
           },
+          tooltip: {
+            enabled: true,
+            x: {
+              show: false,
+              formatter: (val: string) => {
+                return this.categoryData[parseInt(val) - 1];
+              },
+            },
+          },
           xaxis: {
             categories: [],
             tickPlacement: "on",
@@ -122,8 +144,11 @@ class SingleNormalsSold extends Component<{
             overwriteCategories: this.categoryData,
             labels: {
                 show: true,
-                rotate: days === 30 ? -80 : -30,
+                rotate: days === 30 ? -80 : (days === 90 ? -90 : -30),
                 rotateAlways: true,
+                style: {
+                  fontSize: days === 90 ? "7px" : "12px",
+                },
             },
           },
         },
@@ -161,6 +186,7 @@ class SingleNormalsSold extends Component<{
                     <option value="7">Last 7 days</option>
                     <option value="14">Last 14 days</option>
                     <option value="30">Last 30 days</option>
+                    <option value="90">Last 90 days</option>
                 </select>
               </form>
             </div>

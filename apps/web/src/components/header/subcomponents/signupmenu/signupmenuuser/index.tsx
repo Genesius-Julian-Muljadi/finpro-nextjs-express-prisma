@@ -4,8 +4,12 @@ import { Field, Form, Formik, FormikProps } from "formik";
 import { IUser } from "@/interfaces/signupform";
 import axios from "axios";
 import { SignupSchemaUser } from "../schema";
+import { useDispatch } from "react-redux";
+import { toggleMenu } from "@/redux/slices/togglemenu";
 
 export default function SignupMenuUser() {
+    const dispatch = useDispatch()
+
     const postUser = async (params: IUser) => {
         console.log("form data received");
         try {
@@ -84,7 +88,8 @@ export default function SignupMenuUser() {
                                     <div className="text-xs text-red-600">{errors.referralCode}</div>
                                 ) : null}
                             </div>
-                            <button type="submit" className="rounded-md border border-black m-auto py-1 px-5 bg-sky-100 shadow-sm shadow-slate-300 mt-4" aria-label="Sign up button" >
+                            <button type="submit" className="rounded-md border border-black m-auto py-1 px-5 bg-sky-100 shadow-sm shadow-slate-300 mt-4" aria-label="Sign up button"
+                                onClick={() => {dispatch(toggleMenu('reset'))}}>
                                 Sign Up
                             </button>
                         </Form>

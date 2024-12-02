@@ -40,12 +40,12 @@ export default function LoginSignup() {
         <div>
             {!decodedToken ? (
                 <div className="grid grid-cols-3 grid-rows-1">
-                    <div className="col-start-2 col-end-3 row-start-1 row-end-2">
+                    <div className="col-start-2 col-end-3 row-start-1 row-end-2 bg-slate-600 py-2 rounded-md bg-opacity-0 hover:bg-opacity-15 active:bg-opacity-25">
                         <button onClick={() => dispatch(toggleMenu('login'))} aria-label="Log in button">
                             Log in
                         </button>
                     </div>
-                    <div className="col-start-3 col-end-4 row-start-1 row-end-2">
+                    <div className="col-start-3 col-end-4 row-start-1 row-end-2 bg-slate-600 py-2 rounded-md bg-opacity-0 hover:bg-opacity-15 active:bg-opacity-25">
                         <button onClick={() => dispatch(toggleMenu('signup'))} aria-label="Sign up button">
                             Sign up
                         </button>

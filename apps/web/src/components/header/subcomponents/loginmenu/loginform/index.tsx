@@ -78,7 +78,8 @@ export default function LoginForm() {
                                     <div className="text-xs text-red-600">{errors.password}</div>
                                 ) : null}
                             </div>
-                            <button type="submit" className="rounded-md border border-black m-auto py-1 px-5 bg-sky-100 shadow-sm shadow-slate-300 mt-4" aria-label="Log in button">
+                            <button type="submit" className="rounded-md border border-black m-auto py-1 px-5 bg-sky-100 shadow-sm shadow-slate-300 mt-4" aria-label="Log in button"
+                                onClick={() => {dispatch(toggleMenu('reset'))}}>
                                 Log in
                             </button>
                         </Form>

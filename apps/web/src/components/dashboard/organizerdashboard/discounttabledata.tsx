@@ -16,7 +16,7 @@ export default async function DiscountTableData({ event }: { event: Events }) {
         );
     } else if (String(event.discountType) === "Limited") {
         return (
-            <div className="flex flex-row gap-0 mx-auto">
+            <div className="flex flex-row mx-auto w-fit">
                 <p>Limited: </p>
                 {discountData.limited?.map((item) => (
                     <p>{item.breakpoint}|{item.discount}% </p>
@@ -32,7 +32,7 @@ export default async function DiscountTableData({ event }: { event: Events }) {
     } else if (String(event.discountType) === "LimitedDeadline") {
         return (
             <div className="grid grid-cols-1 grid-rows-2 mx-auto">
-                <div className="flex flex-row gap-0">
+                <div className="flex flex-row mx-auto w-fit">
                     <p>Limited: </p>
                     {discountData.limited?.map((item) => (
                         <p>{item.breakpoint}|{item.discount}% </p>

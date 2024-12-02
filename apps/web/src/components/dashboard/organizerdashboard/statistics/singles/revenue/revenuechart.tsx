@@ -5,14 +5,15 @@ import React, { Component } from "react";
 import Chart from "react-apexcharts";
 
 interface IState {
-    options: {
-      chart: {
+    options?: {
+      chart?: {
         id: string;
         toolbar: {
           show: boolean;
         };
       };
-      xaxis: {
+      tooltip?: Object;
+      xaxis?: {
         categories: Array<string>;
         tickPlacement: string;
         position: string;
@@ -21,12 +22,13 @@ interface IState {
           show: boolean;
           rotate: number;
           rotateAlways: boolean;
+          style?: Object;
         };
       };
-      yaxis: Object;
-      dataLabels: Object;
+      yaxis?: Object;
+      dataLabels?: Object;
     };
-    series: Array<{
+    series?: Array<{
       name: string;
       data: Array<number>;
       color: string;
@@ -39,6 +41,8 @@ class SingleRevenue extends Component<{
 }, IState> {
     constructor({ transactions, date }: { transactions: Array<Transactions>, date: Date}) {
       super({ transactions, date });
+      console.log(transactions);
+      console.log(date);
 
       this.ts = transactions;
       this.d = date;
@@ -54,6 +58,15 @@ class SingleRevenue extends Component<{
             id: "basic-bar",
             toolbar: {
                 show: false,
+            },
+          },
+          tooltip: {
+            enabled: true,
+            x: {
+              show: false,
+              formatter: (val: string) => {
+                return this.categoryData[parseInt(val) - 1];
+              },
             },
           },
           xaxis: {
@@ -81,7 +94,7 @@ class SingleRevenue extends Component<{
         },
         series: [
           {
-            name: "series-1",
+            name: "Revenue",
             data: this.seriesData,
             color: "#07a33d",
           },
@@ -105,7 +118,7 @@ class SingleRevenue extends Component<{
 
       const transactionData = transactions.filter((item) => {
         const dateVal = Math.floor(new Date(item.dateCreated).valueOf() / (1000 * 60 * 60 * 24));
-        if (capVal - dateVal <= days - 1) {
+        if (capVal - dateVal <= days - 1 && capVal - dateVal >= 0) {
             return true;
         } else {
             return false;
@@ -117,7 +130,9 @@ class SingleRevenue extends Component<{
       };
       for (let k in transactionData) {
         const dateVal = Math.floor(new Date(transactionData[k].dateCreated).valueOf() / (1000 * 60 * 60 * 24));
-        this.seriesData[(days - 1) - (capVal - dateVal)] += transactionData[k].total;
+        if (capVal - dateVal >= 0) {
+          this.seriesData[(days - 1) - (capVal - dateVal)] += transactionData[k].total;
+        };
       };
 
       for (let i = 0; i < days; i++) {
@@ -133,6 +148,15 @@ class SingleRevenue extends Component<{
                 show: false,
             },
           },
+          tooltip: {
+            enabled: true,
+            x: {
+              show: false,
+              formatter: (val: string) => {
+                return this.categoryData[this.categoryData.findIndex((item) => item === val)];
+              },
+            },
+          },
           xaxis: {
             categories: [],
             tickPlacement: "on",
@@ -140,8 +164,11 @@ class SingleRevenue extends Component<{
             overwriteCategories: this.categoryData,
             labels: {
                 show: true,
-                rotate: days === 30 ? -80 : -30,
+                rotate: days === 30 ? -80 : (days === 90 ? -90 : -30),
                 rotateAlways: true,
+                style: {
+                  fontSize: days === 90 ? "7px" : "12px",
+                },
             },
           },
           yaxis: {
@@ -165,6 +192,7 @@ class SingleRevenue extends Component<{
           },
         ],
       });
+      
     };
   
     render() {
@@ -191,6 +219,7 @@ class SingleRevenue extends Component<{
                     <option value="7">Last 7 days</option>
                     <option value="14">Last 14 days</option>
                     <option value="30">Last 30 days</option>
+                    <option value="90">Last 90 days</option>
                 </select>
               </form>
             </div>

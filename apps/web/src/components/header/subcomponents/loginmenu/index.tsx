@@ -54,7 +54,7 @@ export default function LoginMenu() {
             </div> :
             null}
             <div className="col-start-1 col-end-2 row-start-1 row-end-2" onClick={() => dispatch(toggleMenu('reset'))}></div>
-            <div className="col-start-1 col-end-2 row-start-1 row-end-2 my-auto mx-2 sm:mx-auto h-[480px] max-w-full sm:w-[640px] shadow-sm shadow-slate-700 bg-neutral-100 place-content-center" aria-label="Login Menu">
+            <div className="col-start-1 col-end-2 row-start-1 row-end-2 my-auto mx-2 sm:mx-auto h-[480px] max-w-full sm:w-[640px] shadow-sm shadow-slate-700 bg-neutral-100 place-content-center rounded-lg" aria-label="Login Menu">
                 <div className="mx-2 sm:mx-4 my-2 flex flex-col gap-4">
                     <div className="grid grid-cols-2 grid-rows-1">
                         <label className="cursor-pointer mt-[0.1rem] rounded-md py-[0.4rem] grid m-auto hover:bg-zinc-200 active:bg-zinc-300" aria-label="Log in as participant">

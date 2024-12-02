@@ -907,6 +907,19 @@ async function RegisterEventByOrganizerID(req: Request, res: Response, next: Nex
     };
 };
 
+export async function GetAllEvents(req: Request, res: Response, next: NextFunction) {
+    try {
+        const data = await prisma.events.findMany({
+        });
+        res.status(200).send({
+            message: "Events fetched",
+            data: data,
+        });
+    } catch (err) {
+        next(err);
+    };
+};
+
 export {
     RegisterUser,
     VerifyUser,
