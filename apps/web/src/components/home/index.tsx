@@ -5,28 +5,28 @@ import { Events } from "@/interfaces/database_tables";
 import imgs from "@/assets/images";
 
 export default async function HomeView() {
+    const genres: Array<string> = ["Classical", "Pop", "Jazz", "Rock", "Metal", "Other"];
+    const imgarr = imgs;
+    const eventsraw = await axios.get(process.env.NEXT_PUBLIC_BASE_API_URL + "/auth/events");
+    const eventData: Array<Events> = eventsraw.data.data;
+
+    let randevents: Array<Events> = [];
+    for (let i = 0; i < 8; i++) {
+        randevents.push(eventData[Math.floor(Math.random()*eventData.length)]);
+    };
+
+    let randevents2: Array<Events> = [];
+    const filtered: Array<Events> = eventData.filter((item) => {
+        return new Date(item.eventDate).valueOf() >= new Date().valueOf();
+    });
+    for (let i = 0; i < 8; i++) {
+        randevents2.push(filtered[Math.floor(Math.random()*filtered.length)]);
+    };
+    randevents2.sort((a, b) => {
+        return new Date(b.eventDate).valueOf() - new Date(a.eventDate).valueOf()
+    });
+
     try {
-        const genres: Array<string> = ["Classical", "Pop", "Jazz", "Rock", "Metal", "Other"];
-        const imgarr = imgs;
-        const eventsraw = await axios.get(process.env.NEXT_PUBLIC_BASE_API_URL + "/auth/events");
-        const eventData: Array<Events> = eventsraw.data.data;
-    
-        let randevents: Array<Events> = [];
-        for (let i = 0; i < 8; i++) {
-            randevents.push(eventData[Math.floor(Math.random()*eventData.length)]);
-        };
-    
-        let randevents2: Array<Events> = [];
-        const filtered: Array<Events> = eventData.filter((item) => {
-            return new Date(item.eventDate).valueOf() >= new Date().valueOf();
-        });
-        for (let i = 0; i < 8; i++) {
-            randevents2.push(filtered[Math.floor(Math.random()*filtered.length)]);
-        };
-        randevents2.sort((a, b) => {
-            return new Date(b.eventDate).valueOf() - new Date(a.eventDate).valueOf()
-        });
-    
         return (
             <div>
                 <div className="flex flex-col gap-6 mx-2 sm:mx-10">
