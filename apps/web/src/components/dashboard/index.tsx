@@ -1,4 +1,3 @@
-// import VerifyTokenClient from "@/functions/verifytokenclient";
 import UserDashboard from "./userdashboard";
 import OrganizerDashboard from "./organizerdashboard";
 import { AccessTokenOrganizer, AccessTokenUser } from "@/interfaces/accesstokens";
@@ -20,5 +19,4 @@ export default async function DashboardView() {
             </div>
         );
     };
-
 };

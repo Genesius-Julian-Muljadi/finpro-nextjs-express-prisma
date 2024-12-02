@@ -28,12 +28,12 @@ export default function LoginForm() {
                 password: params.password,
             }, { withCredentials: true });
 
-            const isLoginPage = window.location.href.startsWith(process.env.NEXT_PUBLIC_BASE_WEB_URL + "/login");
-            if (isLoginPage) {
+            // const isLoginPage = window.location.href.startsWith(process.env.NEXT_PUBLIC_BASE_WEB_URL + "/login");
+            // if (isLoginPage) {
                 const loginMenu = document.getElementById("loginmenudiv") as HTMLDivElement;
                 loginMenu.style.display = "none";
-                router.push("/");
-            };
+            //     router.push("/");
+            // };
 
             dispatch(toggleMenu('reset'));
         } catch(err) {

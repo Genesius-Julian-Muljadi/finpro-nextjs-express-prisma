@@ -3,6 +3,7 @@
 import VerifyTokenClient from "@/functions/verifytokenclient";
 import { AccessTokenOrganizer, AccessTokenUser } from "@/interfaces/accesstokens";
 import { toggleMenu } from "@/redux/slices/togglemenu";
+import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { useEffect } from "react";
 import { useCookies } from "react-cookie";
@@ -50,9 +51,9 @@ export default function LoginSignup() {
             ) : (
                 <div className="grid grid-cols-3 grid-rows-1">
                     <div className="col-start-1 col-end-3 row-start-1 row-end-2">
-                        <a href="/dashboard" aria-label="Dashboard button">
+                        <Link href="/dashboard" aria-label="Dashboard button">
                             Dashboard
-                        </a>
+                        </Link>
                     </div>
                     <div className="col-start-3 col-end-4 row-start-1 row-end-2">
                         <button aria-label="Log out button"

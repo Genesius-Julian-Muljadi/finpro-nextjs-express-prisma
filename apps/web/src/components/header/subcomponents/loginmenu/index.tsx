@@ -35,7 +35,6 @@ export default function LoginMenu() {
         };
     });
 
-
     return (
         <div className="fixed hidden h-screen w-screen bg-slate-600 bg-opacity-25 grid-rows-1 grid-cols-1" id="loginmenudiv">
             {window.location.href.startsWith(process.env.NEXT_PUBLIC_BASE_WEB_URL + "/login") ?
