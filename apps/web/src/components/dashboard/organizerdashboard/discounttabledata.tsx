@@ -19,7 +19,7 @@ export default async function DiscountTableData({ event }: { event: Events }) {
             <div className="flex flex-row mx-auto w-fit">
                 <p>Limited: </p>
                 {discountData.limited?.map((item) => (
-                    <p>{item.breakpoint}|{item.discount}% </p>
+                    <p key={item.id}>{item.breakpoint}|{item.discount}% </p>
                 ))}
             </div>
         );
