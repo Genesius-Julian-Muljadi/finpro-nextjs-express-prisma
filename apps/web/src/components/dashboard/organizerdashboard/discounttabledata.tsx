@@ -3,8 +3,6 @@ import axios from "axios";
 
 export default async function DiscountTableData({ event }: { event: Events }) {
     const data = await axios.get(process.env.NEXT_PUBLIC_BASE_API_URL + "/auth/eventdiscount/" + event.id);
-    console.log("Here's the data:");
-    console.log(data.data.data);
     const discountData: {
         limited: Array<Events_Discounts_Limited>;
         deadline: Events_Discounts_Deadline;

@@ -1,6 +1,9 @@
 import InvalidEvent from "../invalidevent";
 
 export default function EventPageByIDView({ id }: { id: number }) {
+    if (!id) {
+        return <InvalidEvent />;
+    };
     try {
         return (
             <div>
@@ -52,8 +55,5 @@ export default function EventPageByIDView({ id }: { id: number }) {
     } catch (err) {
         console.log(err);
         return null;
-    };
-    if (!id) {
-        return <InvalidEvent />;
     };
 };
