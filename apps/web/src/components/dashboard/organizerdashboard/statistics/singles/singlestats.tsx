@@ -16,6 +16,9 @@ export default async function DashboardSingleStats({ transactions, id }: { trans
     return (
         <div className="w-full">
             <div className="flex flex-col gap-4">
+                <div className="mx-2 sm:mx-6">
+                    Event date: {new Date(eventData.eventDate).toString()}
+                </div>
                 <div className="grid grid-cols-1 sm:grid-cols-2 gap-x-2 gap-y-2 sm:gap-x-6 sm:gap-y-4 mx-6 sm:mx-10 *:mx-auto">
                     <div className="w-full">
                         <SingleNormalsSold transactions={transactions} date={new Date(eventData.eventDate)} />
@@ -29,9 +32,6 @@ export default async function DashboardSingleStats({ transactions, id }: { trans
                     <div className="w-full">
                         <SingleRatings ratings={ratingsData} transactions={eventData.normalsSold + eventData.VIPsSold} />
                     </div>
-                </div>
-                <div>
-                    Ratings section, maybe
                 </div>
             </div>
         </div>

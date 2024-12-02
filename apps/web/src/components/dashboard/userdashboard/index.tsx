@@ -65,7 +65,7 @@ export default async function UserDashboard({ token }: { token: AccessTokenUser 
                                 <div className="flex flex-col gap-0">
                                     <table className="border border-black">
                                         <thead>
-                                            <tr>
+                                            <tr className="*:border *:border-gray-700">
                                                 <th>Nomimal</th>
                                                 <th>Expiry</th>
                                                 <th>Received on</th>
@@ -73,7 +73,7 @@ export default async function UserDashboard({ token }: { token: AccessTokenUser 
                                         </thead>
                                         <tbody>
                                             {pointHistory?.map((item) => (
-                                                <tr key={item.id}>
+                                                <tr key={item.id} className="*:border *:border-gray-700">
                                                     <td>{item.nominal.toLocaleString("id-ID")}</td>
                                                     <td>{item.expiryDate ? new Date(item.expiryDate).toLocaleDateString() : "-"}</td>
                                                     <td>{new Date(item.dateCreated).toLocaleDateString()}</td>
@@ -98,7 +98,7 @@ export default async function UserDashboard({ token }: { token: AccessTokenUser 
                                 <div className="flex flex-col gap-0">
                                     <table className="border border-black">
                                         <thead>
-                                            <tr>
+                                            <tr className="*:border *:border-gray-700">
                                                 <th>Discount</th>
                                                 <th>Expiry</th>
                                                 <th>Received from</th>
@@ -107,7 +107,7 @@ export default async function UserDashboard({ token }: { token: AccessTokenUser 
                                         </thead>
                                         <tbody>
                                             {coupons?.map((item) => (
-                                                <tr key={item.id}>
+                                                <tr key={item.id} className="*:border *:border-gray-700">
                                                     <td>{item.discount}%</td>
                                                     <td>{item.expiryDate ? new Date(item.expiryDate).toLocaleDateString() : "-"}</td>
                                                     <td>{item.organizerName === "admin" ? "Referral code" : item.organizerName}</td>
@@ -128,18 +128,23 @@ export default async function UserDashboard({ token }: { token: AccessTokenUser 
                     </div>
                     <table className="border border-black">
                         <thead>
-                            <tr>
+                            <tr className="*:border *:border-gray-700">
                                 <th>Event</th>
                                 <th>Regular / VIP</th>
                                 <th>Total</th>
                             </tr>
                         </thead>
                         <tbody>
-                            {history?.map((item) => (
-                                <tr key={item.id}>
-                                    <td>{eventData.shift()?.title}</td>
+                            {eventData?.map((item) => (
+                                <tr key={item.id} className="*:border *:border-gray-700">
+                                    <td>
+                                        <a href={`${String(process.env.NEXT_PUBLIC_BASE_WEB_URL)}/events/${item.id}`}
+                                        className="underline text-blue-600 hover:text-blue-800 active:text-black">
+                                            {item.title}
+                                        </a>
+                                    </td>
                                     <td>{transactionData[0].ticketCount} / {transactionData[0].VIPs}</td>
-                                    <td>{transactionData.shift()?.total}</td>
+                                    <td>Rp {transactionData.shift()?.total.toLocaleString("id-ID")},00</td>
                                 </tr>
                             ))}
                         </tbody>

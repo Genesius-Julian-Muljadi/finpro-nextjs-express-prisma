@@ -4,10 +4,13 @@ import { Field, Form, Formik, FormikProps } from "formik";
 import { IUser } from "@/interfaces/signupform";
 import axios from "axios";
 import { SignupSchemaUser } from "../schema";
+import { useDispatch } from "react-redux";
+import { toggleMenu } from "@/redux/slices/togglemenu";
 
 export default function SignupMenuUser() {
+    const dispatch = useDispatch()
+
     const postUser = async (params: IUser) => {
-        console.log("form data received");
         try {
             const API: string = process.env.NEXT_PUBLIC_BASE_API_URL + "/auth";
             const output = await axios.post(API + "/registeruser", {
@@ -17,8 +20,6 @@ export default function SignupMenuUser() {
                 password: params.password,
                 referralCode: params.referralCode,
             });
-
-            console.log(output);
         } catch(err) {
             console.log(err);
         };
@@ -36,7 +37,6 @@ export default function SignupMenuUser() {
                 }}
                 validationSchema={SignupSchemaUser}
                 onSubmit={(values) => {
-                    console.log(values);
                     postUser(values);
                 }}>
                 {(props: FormikProps<IUser>) => {
@@ -84,7 +84,8 @@ export default function SignupMenuUser() {
                                     <div className="text-xs text-red-600">{errors.referralCode}</div>
                                 ) : null}
                             </div>
-                            <button type="submit" className="rounded-md border border-black m-auto py-1 px-5 bg-sky-100 shadow-sm shadow-slate-300 mt-4" aria-label="Sign up button" >
+                            <button type="submit" className="rounded-md border border-black m-auto py-1 px-5 bg-sky-100 shadow-sm shadow-slate-300 mt-4" aria-label="Sign up button"
+                                onClick={() => {dispatch(toggleMenu('reset'))}}>
                                 Sign Up
                             </button>
                         </Form>

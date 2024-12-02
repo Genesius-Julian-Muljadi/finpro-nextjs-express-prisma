@@ -63,6 +63,9 @@ class GlobalTicketsSold extends Component<{
             enabled: true,
             x: {
               show: false,
+              formatter: (val: string) => {
+                return this.categoryData[parseInt(val) - 1];
+              },
             },
           },
           xaxis: {
@@ -154,6 +157,9 @@ class GlobalTicketsSold extends Component<{
           this.series2Data.unshift(0);
         };
         for (let k in this.es) {
+          if (new Date(this.es[k].eventDate).getFullYear() > new Date().getFullYear()) {
+            continue;
+          };
           const index: number = new Date(this.es[k].eventDate).getFullYear() - this.y;
           this.seriesData[index] += this.es[k].normalsSold;
           this.series2Data[index] += this.es[k].VIPsSold;

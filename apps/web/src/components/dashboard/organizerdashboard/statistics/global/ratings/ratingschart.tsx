@@ -1,6 +1,6 @@
 "use client";
 
-import { Events } from "@/interfaces/database_tables";
+import { Event_Ratings, Events } from "@/interfaces/database_tables";
 import React, { Component } from "react";
 import Chart from "react-apexcharts";
 
@@ -39,11 +39,13 @@ interface IState {
 class GlobalRatings extends Component<{
     events: Array<Events>,
     year: number,
+    ratings: Array<Event_Ratings>,
 }, IState> {
-    constructor({ events, year }: { events: Array<Events>, year: number }) {
-      super({ events, year });
+    constructor({ events, year, ratings }: { events: Array<Events>, year: number, ratings: Array<Event_Ratings> }) {
+      super({ events, year, ratings });
 
       this.es = events;
+      this.rs = ratings;
       this.y = year;
       this.updateChart = this.updateChart.bind(this);
       this.updateChart("all");
@@ -63,6 +65,9 @@ class GlobalRatings extends Component<{
             enabled: true,
             x: {
               show: false,
+              formatter: (val: string) => {
+                return this.categoryData[parseInt(val) - 1];
+              },
             },
           },
           xaxis: {
@@ -101,6 +106,7 @@ class GlobalRatings extends Component<{
     seriesData: Array<number> = [];
     categoryData: Array<string> = [];
     es: Array<Events> = [];
+    rs: Array<Event_Ratings> = [];
     y: number = 1970;
     avg: number = 0;
     yearlys: Array<string> = [];
@@ -121,28 +127,51 @@ class GlobalRatings extends Component<{
 
       if (mode === "yearly" && year) {
         this.seriesData = [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0];
+        let countarr: Array<number> = [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0];
         let count = 0;
         for (let k in this.es) {
           const d: Date = new Date(this.es[k].eventDate);
           if (d.getFullYear() === year) {
-            const rating: number = this.es[k].ratingAvg ? this.es[k].ratingAvg : 0;
-            this.seriesData[d.getMonth()] += rating;
-            this.avg += rating;
-            count += rating === 0 ? 0 : 1;
+            const ratingarr: Array<Event_Ratings> = this.rs.filter((item) => {
+              return item.eventID === this.es[k].id;
+            });
+            for (let l in ratingarr) {
+              const index: number = d.getMonth();
+              countarr[index]++;
+              this.seriesData[index] += ratingarr[l].rating;
+              this.avg += ratingarr[l].rating;
+              count++;
+            };
           };
-          this.avg = count === 0 ? 0 : this.avg / count;
         };
+        for (let k in this.seriesData) {
+          this.seriesData[k] = Math.round((countarr[k] ? this.seriesData[k] / countarr[k] : 0)*100)/100;
+        };
+        this.avg = count === 0 ? 0 : this.avg / count;
       } else {
+        let countarr: Array<number> = [];
         for (let i = now.getFullYear(); i >= this.y; i--) {
-          this.seriesData.unshift(0);
+          this.seriesData.push(0);
+          countarr.push(0);
         };
         let count = 0;
         for (let k in this.es) {
-          const index: number = new Date(this.es[k].eventDate).getFullYear() - this.y;
-          const rating: number = this.es[k].ratingAvg ? this.es[k].ratingAvg : 0;
-          this.seriesData[index] += rating;
-          this.avg += rating;
-          count += rating === 0 ? 0 : 1;
+          if (new Date(this.es[k].eventDate).getFullYear() > new Date().getFullYear()) {
+            continue;
+          };
+          const ratingarr: Array<Event_Ratings> = this.rs.filter((item) => {
+            return item.eventID === this.es[k].id;
+          });
+          for (let l in ratingarr) {
+            const index: number = new Date(this.es[k].eventDate).getFullYear() - this.y;
+            countarr[index]++;
+            this.seriesData[index] += ratingarr[l].rating;
+            this.avg += ratingarr[l].rating;
+            count++;
+          };
+        };
+        for (let k in this.seriesData) {
+          this.seriesData[k] = Math.round((countarr[k] ? this.seriesData[k] / countarr[k] : 0)*100)/100;
         };
         this.avg = count === 0 ? 0 : this.avg / count;
       };
@@ -210,7 +239,7 @@ class GlobalRatings extends Component<{
       return (
         <div className="app p-4 rounded-md shadow-sm shadow-slate-400">
           <div className="row">
-            <div className="text-center font-semibold">Ratings: {this.avg === 0 ? '-' : 'Average ' + this.avg}</div>
+            <div className="text-center font-semibold">Ratings: {this.avg === 0 ? '-' : 'Average ' + Math.round(this.avg * 100)/100}</div>
           </div>
           <div className="row">
             <div className="mixed-chart">

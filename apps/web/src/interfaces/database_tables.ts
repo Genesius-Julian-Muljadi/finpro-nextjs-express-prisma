@@ -1,3 +1,20 @@
+interface Users {
+    id: number;
+    firstName: string;
+    lastName: string;
+    email: string;
+    password: string;
+    pointBalance: number;
+    referralCode: string;
+    failedLogins: number;
+    active: string;
+    emailVerified: boolean;
+    dateCreated: Date;
+    updated: Date;
+    coupons: Array<Coupons>;
+    codeUsed: Array<Point_Balance>;
+};
+
 interface Organizers {
     id: number;
     name: string;
@@ -67,8 +84,8 @@ interface Transactions {
     eventID: number | null;
     ticketCount: number;
     VIPs: number;
-    normalPrice: number | null;
-    VIPPrice: number | null;
+    normalPrice: number;
+    VIPPrice: number;
     discount: number;
     discountDesc: string | null;
     pointDiscount: number | null;
@@ -100,6 +117,7 @@ interface Event_Ratings {
 };
 
 export type {
+    Users,
     Organizers,
     History,
     Point_Balance,

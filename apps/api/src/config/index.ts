@@ -7,6 +7,7 @@ config({
 export const {
     PORT,
     DATABASE_URL,
+    DIRECT_URL,
     SECRET_KEY,
     SECRET_KEY2,
     NODEMAILER_EMAIL,

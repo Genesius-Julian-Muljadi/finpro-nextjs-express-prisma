@@ -1,6 +1,6 @@
 "use client";
 
-import { Events, Organizers } from "@/interfaces/database_tables";
+import { Event_Ratings, Events, Organizers } from "@/interfaces/database_tables";
 import { useDispatch, useSelector } from "react-redux";
 import { toggleGStats } from "@/redux/slices/toggleglobalstatistics";
 // import GlobalRatings from "./ratings/ratings";
@@ -8,7 +8,7 @@ import GlobalTicketsSold from "./ticketssold/ticketssoldchart";
 import GlobalRevenue from "./revenue/revenuechart";
 import GlobalRatings from "./ratings/ratingschart";
 
-export default function GlobalStatistics({ events, organizer }: { events: Array<Events>, organizer: Organizers }) {
+export default function GlobalStatistics({ events, organizer, ratings }: { events: Array<Events>, organizer: Organizers, ratings: Array<Event_Ratings> }) {
     let n = useSelector((state: {TGSSlice: {menuOpen: boolean}}) => state.TGSSlice.menuOpen);
     const dispatch = useDispatch();
 
@@ -31,7 +31,7 @@ export default function GlobalStatistics({ events, organizer }: { events: Array<
             <div className="hidden grid-cols-1 grid-rows-3 sm:grid-cols-3 sm:grid-rows-1 gap-1 w-full p-4 *:mx-auto" id="globalchartsdiv">
                 <GlobalTicketsSold events={events} year={new Date(organizer.dateCreated).getFullYear()} />
                 <GlobalRevenue events={events} year={new Date(organizer.dateCreated).getFullYear()} />
-                <GlobalRatings events={events} year={new Date(organizer.dateCreated).getFullYear()} />
+                <GlobalRatings events={events} year={new Date(organizer.dateCreated).getFullYear()} ratings={ratings} />
             </div>
         </div>
     );

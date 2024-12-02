@@ -17,7 +17,6 @@ export default function SignupMenu() {
         const button2 = document.getElementById("roleselectorganizerlabelsignup") as HTMLSpanElement;
         
         if (role == 1) {
-            console.log("signup menu changed to participant");
             button1.style.backgroundColor = "rgb(185, 228, 248)";
             button2.style.backgroundColor = "transparent";
             menu1.style.zIndex = "1";
@@ -25,7 +24,6 @@ export default function SignupMenu() {
             menu1.style.display = "block";
             menu2.style.display = "none";
         } else if (role == 2) {
-            console.log("signup menu changed to organizer");
             button1.style.backgroundColor = "transparent";
             button2.style.backgroundColor = "rgb(185, 228, 248)";
             menu1.style.zIndex = "-1";
@@ -33,7 +31,6 @@ export default function SignupMenu() {
             menu1.style.display = "none";
             menu2.style.display = "block";
         } else {
-            console.log("page loaded");
             button1.style.backgroundColor = "transparent";
             button2.style.backgroundColor = "transparent";
             menu1.style.zIndex = "-1";
@@ -44,7 +41,7 @@ export default function SignupMenu() {
     return (
         <div className="fixed hidden h-screen w-screen bg-slate-600 bg-opacity-25 grid-cols-1 grid-rows-1" id="signupmenudiv">
             <div className="col-start-1 col-end-2 row-start-1 row-end-2" onClick={() => dispatch(toggleMenu('reset'))}></div>
-            <div className="col-start-1 col-end-2 row-start-1 row-end-2 my-auto mx-2 sm:mx-auto h-[560px] max-w-full sm:w-[640px] shadow-sm shadow-slate-700 bg-neutral-100" aria-label="Sign Up Menu">
+            <div className="col-start-1 col-end-2 row-start-1 row-end-2 my-auto mx-2 sm:mx-auto h-[560px] max-w-full sm:w-[640px] shadow-sm shadow-slate-700 bg-neutral-100 rounded-lg" aria-label="Sign Up Menu">
                 <div className="mx-2 sm:mx-8 mt-7 mb-2 flex flex-col gap-6">
                     <div className="grid grid-cols-2 grid-rows-1">
                         <label className="cursor-pointer mt-[0.1rem] rounded-md py-[0.4rem] grid m-auto hover:bg-zinc-200 active:bg-zinc-300" aria-label="Sign up as participant button">

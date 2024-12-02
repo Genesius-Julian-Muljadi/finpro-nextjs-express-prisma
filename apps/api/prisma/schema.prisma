@@ -6,19 +6,10 @@ generator client {
 }
 
 datasource db {
-  provider = "mysql"
+  provider = "postgresql"
   url      = env("DATABASE_URL")
+  directUrl = env("DIRECT_URL")
 }
-
-// model Sample {
-//   id        Int      @id @default(autoincrement())
-//   name      String
-//   code      String   @unique
-//   createdAt DateTime @default(now())
-//   updatedAt DateTime @updatedAt
-
-//   @@map("samples") // if you want to use snake_case format
-// }
 
 enum ActiveStatus {
   Active
@@ -94,7 +85,7 @@ model Events {
   overview String @db.VarChar(100)  // Event could have more than 1 lead artist; Display all at once in same string
   genre Genres @default(Other)
   venue String @db.VarChar(50)
-  eventDesc String
+  eventDesc String @db.Text
   maxNormals Int?  // Maximum number of attendees/tickets sold, not including VIPs
   maxVIPs Int @default(0)  // Maximum number of VIP tickets
   normalsSold Int @default(0)  // Track how many normal tickets have been sold
@@ -121,8 +112,8 @@ model Transactions {
   event Events? @relation(fields: [eventID], references: [id])
   ticketCount Int @default(1)
   VIPs Int @default(0)
-  normalPrice Int?
-  VIPPrice Int?
+  normalPrice Int
+  VIPPrice Int
   discount Int @default(0)  // %-based discount. Limit to 1 discount per transaction
   discountDesc String?
   pointDiscount Int?  // Point-based discounts from referrals. Subtract from total after %-based discount
@@ -157,7 +148,7 @@ model Coupons {
   code String @db.VarChar(15)
   userID Int?  // Coupons can be created to provide for offline
   user Users? @relation(fields: [userID], references: [id])
-  organizerID Int @default(5)  // Coupons must be created by an organizer. Default 5 for admin for referral coupons
+  organizerID Int @default(1)  // Coupons must be created by an organizer. Default 1 for admin for referral coupons
   // Coupons can only be used for events managed by this organizer, or any organizer if admin
   organizer Organizers @relation(name: "IDrel", fields: [organizerID], references: [id])
   organizerName String @default("admin")

@@ -4,19 +4,20 @@ import { Field, Form, Formik, FormikProps } from "formik";
 import { IOrganizer } from "@/interfaces/signupform";
 import axios from "axios";
 import { SignupSchemaOrganizer } from "../schema";
+import { toggleMenu } from "@/redux/slices/togglemenu";
+import { useDispatch } from "react-redux";
 
 export default function SignupMenuOrganizer() {
+    const dispatch = useDispatch();
+    
     const postOrganizer = async (params: IOrganizer) => {
         try {
             const API: string = process.env.NEXT_PUBLIC_BASE_API_URL + "/auth";
-            console.log(API);
             const output = await axios.post(API + "/registerorganizer", {
                 name: params.name,
                 email: params.email,
                 password: params.password,
             });
-            
-            console.log(output);
         } catch(err) {
             console.log(err);
         };
@@ -32,7 +33,6 @@ export default function SignupMenuOrganizer() {
                 }}
                 validationSchema={SignupSchemaOrganizer}
                 onSubmit={(values) => {
-                    // console.log(values);
                     postOrganizer(values);
                 }}>
                 {(props: FormikProps<IOrganizer>) => {
@@ -64,7 +64,8 @@ export default function SignupMenuOrganizer() {
                                     <div className="text-xs text-red-600">{errors.password}</div>
                                 ) : null}
                             </div>
-                            <button type="submit" className="rounded-md border border-black m-auto py-1 px-5 bg-sky-100 shadow-sm shadow-slate-300 mt-4" aria-label="Sign up button">
+                            <button type="submit" className="rounded-md border border-black m-auto py-1 px-5 bg-sky-100 shadow-sm shadow-slate-300 mt-4" aria-label="Sign up button"
+                                onClick={() => {dispatch(toggleMenu('reset'))}}>
                                 Sign Up
                             </button>
                         </Form>

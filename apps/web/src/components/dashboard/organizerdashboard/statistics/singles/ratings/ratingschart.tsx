@@ -8,6 +8,7 @@ interface IState {
     options: {
       chart: Object;
       labels: Array<string>
+      tooltip?: Object;
       xaxis: {
         labels: Object;
       };
@@ -86,7 +87,7 @@ class SingleRatings extends Component<{
           </div>
           <div className="mt-4 mr-2">
             <div className="pie-chart w-full flex">
-              <Chart class="w-[80%] mx-auto"
+              <Chart className="w-[80%] mx-auto"
                 options={this.state.options}
                 series={this.state.series}
                 type="pie"

@@ -135,6 +135,9 @@ class GlobalRevenue extends Component<{
           this.seriesData.unshift(0);
         };
         for (let k in this.es) {
+          if (new Date(this.es[k].eventDate).getFullYear() > new Date().getFullYear()) {
+            continue;
+          };
           const index: number = new Date(this.es[k].eventDate).getFullYear() - this.y;
           this.seriesData[index] += this.es[k].revenue;
           this.total += this.es[k].revenue;
@@ -152,7 +155,7 @@ class GlobalRevenue extends Component<{
           tooltip: {
             enabled: true,
             x: {
-              show: true  ,
+              show: true,
               formatter: (val: string) => {
                 return this.categoryData[parseInt(val) - 1];
               },
@@ -206,7 +209,7 @@ class GlobalRevenue extends Component<{
       return (
         <div className="app p-4 rounded-md shadow-sm shadow-slate-400">
           <div className="row">
-            <div className="text-center font-semibold">Revenue: Rp {this.total.toLocaleString("id-ID")},00</div>
+            <div className="text-center font-semibold">Revenue (x1.000): Rp {this.total.toLocaleString("id-ID")},00</div>
           </div>
           <div className="row">
             <div className="mixed-chart">
