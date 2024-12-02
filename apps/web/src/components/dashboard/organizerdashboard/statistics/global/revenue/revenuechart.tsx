@@ -245,7 +245,7 @@ class GlobalRevenue extends Component<{
                 <select onChange={(e) => {this.updateChart("yearly", parseInt(e.target.value))}}
                   className="cursor-pointer w-32 h-8 bg-slate-600 bg-opacity-0 hover:bg-opacity-20 pl-2 rounded-md shadow-sm shadow-slate-600">
                     {this.yearlys.map((item) => (
-                      <option value={item}>{item}</option>
+                      <option key={item} value={item}>{item}</option>
                     ))}
                 </select>
               </form>
