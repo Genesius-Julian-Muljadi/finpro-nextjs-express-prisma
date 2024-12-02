@@ -81,7 +81,7 @@ export default async function HomeView() {
                     </div>
                     <div className={`grid grid-cols-3 sm:grid-cols-${genres.length} gap-4`}>
                         {genres.map((item) => (
-                            <div className="text-base sm:text-lg font-semibold shadow-md shadow-slate-500 rounded-full size-20 sm:size-32 m-auto text-center grid bg-zinc-50">
+                            <div key={item} className="text-base sm:text-lg font-semibold shadow-md shadow-slate-500 rounded-full size-20 sm:size-32 m-auto text-center grid bg-zinc-50">
                                 <div className="m-auto">
                                     {item}
                                 </div>
@@ -95,7 +95,7 @@ export default async function HomeView() {
                     </div>
                     <div className="grid grid-cols-2 sm:grid-cols-4 sm:grid-rows-2 gap-4">
                         {[0, 1, 2, 3, 4, 5, 6, 7].map((item) => (
-                            <div className="m-auto text-semibold border border-slate-700 rounded-full py-1 px-3 shadow-sm shadow-orange-200">
+                            <div key={item} className="m-auto text-semibold border border-slate-700 rounded-full py-1 px-3 shadow-sm shadow-orange-200">
                                 {randevents[item].venue}
                             </div>
                         ))}
@@ -107,7 +107,7 @@ export default async function HomeView() {
                     </div>
                     <div className="grid grid-cols-1 sm:grid-cols-4 sm:grid-rows-2 gap-4">
                         {[0, 1, 2, 3, 4, 5, 6, 7].map((item) => (
-                            <div className="flex flex-col gap-1">
+                            <div key={item} className="flex flex-col gap-1">
                                 <Image src={imgarr[Math.floor(Math.random()*imgarr.length)]} alt='stockimg' className="h-72 sm:h-52 w-[100%] rounded-sm" />
                                 <div className="grid grid-cols-3 grid-rows-1 mx-2">
                                     <div className="font-semibold text-left col-span-2 text-wrap text-lg my-auto">
@@ -143,7 +143,7 @@ export default async function HomeView() {
                     </div>
                     <div className="grid grid-cols-1 sm:grid-cols-4 sm:grid-rows-2 gap-4">
                         {[0, 1, 2, 3, 4, 5, 6, 7].map((item) => (
-                            <div className="flex flex-col gap-1">
+                            <div key={item} className="flex flex-col gap-1">
                                 <Image src={imgarr[Math.floor(Math.random()*imgarr.length)]} alt='stockimg' className="h-72 sm:h-52 w-[100%] rounded-sm" />
                                 <div className="grid grid-cols-3 grid-rows-1 mx-2">
                                     <div className="font-semibold text-left col-span-2 text-wrap text-lg my-auto">
