@@ -11,46 +11,45 @@ export default async function EventPurchasePageByIDView({ id }: { id: number }) 
     if (!id) {
         return <InvalidEvent />;
     };
+    const API: string = process.env.NEXT_PUBLIC_BASE_API_URL + "/auth";
+
+    const eventData = await axios.get(API + "/eventevent/" + id);
+    const event: Events = eventData.data.data;
+
+    const token = await VerifyTokenServer() as AccessTokenUser;
+
+    const couponData = await axios.get(API + "/couponsuser/" + token.id);
+    const coupons: Array<Coupons> =
+    // Retrieve only coupons from this event's organizer, or from admin
+        couponData.data.data.filter((item: Coupons) => item.organizerID === event.organizerID || item.organizerID === 5);
+
+    const pointData = await axios.get(API + "/pointsuser/" + token.id);
+    const pointHistory: Array<Point_Balance> = pointData.data.data;
+    const activePoints: Array<Point_Balance> = pointHistory.filter((item) => {
+        const now = new Date();
+        const expiry = new Date(item.expiryDate);
+        if (now.getFullYear() > expiry.getFullYear()) {
+            return false;
+        } else if (now.getFullYear() < expiry.getFullYear()) {
+            return true;
+        } else if (now.getMonth() > expiry.getMonth()) {
+            return false;
+        } else if (now.getMonth() < expiry.getMonth()) {
+            return true;
+        } else if (now.getDate() > expiry.getDate()) {
+            return false;
+        } else {
+            return true;
+        };
+    });
+    let activePointsTotal: number = 0;
+    for (let i = 0; i < activePoints.length; i++) {
+        activePointsTotal += activePoints[i].nominal;
+    };
+
+    const imgarr = imgs;
 
     try {
-        const API: string = process.env.NEXT_PUBLIC_BASE_API_URL + "/auth";
-
-        const eventData = await axios.get(API + "/eventevent/" + id);
-        const event: Events = eventData.data.data;
-
-        const token = await VerifyTokenServer() as AccessTokenUser;
-    
-        const couponData = await axios.get(API + "/couponsuser/" + token.id);
-        const coupons: Array<Coupons> =
-        // Retrieve only coupons from this event's organizer, or from admin
-            couponData.data.data.filter((item: Coupons) => item.organizerID === event.organizerID || item.organizerID === 5);
-    
-        const pointData = await axios.get(API + "/pointsuser/" + token.id);
-        const pointHistory: Array<Point_Balance> = pointData.data.data;
-        const activePoints: Array<Point_Balance> = pointHistory.filter((item) => {
-            const now = new Date();
-            const expiry = new Date(item.expiryDate);
-            if (now.getFullYear() > expiry.getFullYear()) {
-                return false;
-            } else if (now.getFullYear() < expiry.getFullYear()) {
-                return true;
-            } else if (now.getMonth() > expiry.getMonth()) {
-                return false;
-            } else if (now.getMonth() < expiry.getMonth()) {
-                return true;
-            } else if (now.getDate() > expiry.getDate()) {
-                return false;
-            } else {
-                return true;
-            };
-        });
-        let activePointsTotal: number = 0;
-        for (let i = 0; i < activePoints.length; i++) {
-            activePointsTotal += activePoints[i].nominal;
-        };
-
-        const imgarr = imgs;
-    
         return (
             <div className="mx-6">
                 <div className="flex flex-col sm:grid sm:grid-cols-5 sm:grid-rows-1 gap-10">

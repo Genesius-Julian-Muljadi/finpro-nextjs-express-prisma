@@ -30,7 +30,7 @@ export default async function VerifyTokenServer(): Promise<AccessTokenUser | Acc
         
     } catch (err) {
         console.log("something went wrong here");
-        console.log(err);
+        console.log("myerror: " + err);
         return null;
     };
 };

@@ -33,41 +33,46 @@ export default function LoginSignup() {
         };
     }, [n]);
 
-    return (
-        <div>
-            {!decodedToken ? (
-                <div className="grid grid-cols-3 grid-rows-1">
-                    <div className="col-start-2 col-end-3 row-start-1 row-end-2 bg-slate-600 py-2 rounded-md bg-opacity-0 hover:bg-opacity-15 active:bg-opacity-25">
-                        <button onClick={() => dispatch(toggleMenu('login'))} aria-label="Log in button">
-                            Log in
-                        </button>
+    try {
+        return (
+            <div>
+                {!decodedToken ? (
+                    <div className="grid grid-cols-3 grid-rows-1">
+                        <div className="col-start-2 col-end-3 row-start-1 row-end-2 bg-slate-600 py-2 rounded-md bg-opacity-0 hover:bg-opacity-15 active:bg-opacity-25">
+                            <button onClick={() => dispatch(toggleMenu('login'))} aria-label="Log in button">
+                                Log in
+                            </button>
+                        </div>
+                        <div className="col-start-3 col-end-4 row-start-1 row-end-2 bg-slate-600 py-2 rounded-md bg-opacity-0 hover:bg-opacity-15 active:bg-opacity-25">
+                            <button onClick={() => dispatch(toggleMenu('signup'))} aria-label="Sign up button">
+                                Sign up
+                            </button>
+                        </div>
                     </div>
-                    <div className="col-start-3 col-end-4 row-start-1 row-end-2 bg-slate-600 py-2 rounded-md bg-opacity-0 hover:bg-opacity-15 active:bg-opacity-25">
-                        <button onClick={() => dispatch(toggleMenu('signup'))} aria-label="Sign up button">
-                            Sign up
-                        </button>
+                ) : (
+                    <div className="grid grid-cols-3 grid-rows-1">
+                        <div className="col-start-1 col-end-3 row-start-1 row-end-2">
+                            <Link href="/dashboard" aria-label="Dashboard button">
+                                Dashboard
+                            </Link>
+                        </div>
+                        <div className="col-start-3 col-end-4 row-start-1 row-end-2">
+                            <button aria-label="Log out button"
+                            onClick={() => {
+                                router.push("/");
+                                removeCookie("access_token", { path: "/" });
+                                removeSession("access_token_session", { path: "/" });
+                                sessionStorage.removeItem("access_token");
+                            }}>
+                                Log out
+                            </button>
+                        </div>
                     </div>
-                </div>
-            ) : (
-                <div className="grid grid-cols-3 grid-rows-1">
-                    <div className="col-start-1 col-end-3 row-start-1 row-end-2">
-                        <Link href="/dashboard" aria-label="Dashboard button">
-                            Dashboard
-                        </Link>
-                    </div>
-                    <div className="col-start-3 col-end-4 row-start-1 row-end-2">
-                        <button aria-label="Log out button"
-                        onClick={() => {
-                            router.push("/");
-                            removeCookie("access_token", { path: "/" });
-                            removeSession("access_token_session", { path: "/" });
-                            sessionStorage.removeItem("access_token");
-                        }}>
-                            Log out
-                        </button>
-                    </div>
-                </div>
-            )}
-        </div>
-    );
+                )}
+            </div>
+        );
+    } catch (err) {
+        console.log(err);
+        return null;
+    };
 };

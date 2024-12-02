@@ -10,9 +10,14 @@ export default function InvalidEvent() {
         router.push("/events");
     })
 
-    return (
-        <div className="flex">
-            <div className="m-auto">Invalid event ID</div>
-        </div>
-    );
+    try {
+        return (
+            <div className="flex">
+                <div className="m-auto">Invalid event ID</div>
+            </div>
+        );
+    } catch (err) {
+        console.log(err);
+        return null;
+    };
 };
