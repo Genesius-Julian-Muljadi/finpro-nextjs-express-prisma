@@ -33,15 +33,10 @@ const RegisterValidationUser = [
         .withMessage("Referral code contains only uppercase letters and numbers"),
     (req: Request, res: Response, next: NextFunction) => {
         try {
-            // console.log("error here?");
             const errors = validationResult(req);
-            console.log(errors);
-            // console.log("error here?");
             if (!errors.isEmpty()) {
                 throw new Error(errors.array()[0].msg);
             };
-
-            console.log("User info validation successful");
             next();
         } catch (err) {
             next(err);
@@ -69,15 +64,10 @@ const RegisterValidationOrganizer = [
         .withMessage("Passwords must contain at least 6 characters, at least one letter, one number, and one special character."),
     (req: Request, res: Response, next: NextFunction) => {
         try {
-            // console.log("error here?");
             const errors = validationResult(req);
-            console.log(errors);
-            // console.log("error here?");
             if (!errors.isEmpty()) {
                 throw new Error(errors.array()[0].msg);
             };
-
-            console.log("Organizer info validation successful");
             next();
         } catch (err) {
             next(err);

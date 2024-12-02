@@ -13,14 +13,11 @@ export default function SignupMenuOrganizer() {
     const postOrganizer = async (params: IOrganizer) => {
         try {
             const API: string = process.env.NEXT_PUBLIC_BASE_API_URL + "/auth";
-            console.log(API);
             const output = await axios.post(API + "/registerorganizer", {
                 name: params.name,
                 email: params.email,
                 password: params.password,
             });
-            
-            console.log(output);
         } catch(err) {
             console.log(err);
         };
@@ -36,7 +33,6 @@ export default function SignupMenuOrganizer() {
                 }}
                 validationSchema={SignupSchemaOrganizer}
                 onSubmit={(values) => {
-                    // console.log(values);
                     postOrganizer(values);
                 }}>
                 {(props: FormikProps<IOrganizer>) => {

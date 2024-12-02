@@ -6,7 +6,6 @@ import VerifyTokenServer from "@/functions/verifytokenserver";
 
 export default async function DashboardView() {
     const token = await VerifyTokenServer();
-    console.log(token);
 
     if (token?.role === "user") {
         return <UserDashboard token={token as AccessTokenUser} />

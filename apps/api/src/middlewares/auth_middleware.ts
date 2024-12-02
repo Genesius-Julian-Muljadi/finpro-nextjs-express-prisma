@@ -31,10 +31,8 @@ async function VerifyTokenUserSignup(req: Request, res: Response, next: NextFunc
             console.log("Incorrect header format");
             throw new Error("Unauthorized access");
         };
-        console.log("Token received: " + token);
 
         const ver = verify(token, String(SECRET_KEY2));
-        console.log(ver);
         if (!ver) {
             console.log("Key mismatch");
             throw new Error("Unauthorized access: Key mismatch");
@@ -57,10 +55,8 @@ async function VerifyTokenOrganizerSignup(req: Request, res: Response, next: Nex
             console.log("Incorrect header format");
             throw new Error("Unauthorized access");
         };
-        console.log("Token received: " + token);
 
         const ver = verify(token, String(SECRET_KEY2));
-        console.log(ver);
         if (!ver) {
             console.log("Key mismatch");
             throw new Error("Unauthorized access: Key mismatch");

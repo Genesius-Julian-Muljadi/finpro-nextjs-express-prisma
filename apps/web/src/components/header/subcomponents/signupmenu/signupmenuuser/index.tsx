@@ -11,7 +11,6 @@ export default function SignupMenuUser() {
     const dispatch = useDispatch()
 
     const postUser = async (params: IUser) => {
-        console.log("form data received");
         try {
             const API: string = process.env.NEXT_PUBLIC_BASE_API_URL + "/auth";
             const output = await axios.post(API + "/registeruser", {
@@ -21,8 +20,6 @@ export default function SignupMenuUser() {
                 password: params.password,
                 referralCode: params.referralCode,
             });
-
-            console.log(output);
         } catch(err) {
             console.log(err);
         };
@@ -40,7 +37,6 @@ export default function SignupMenuUser() {
                 }}
                 validationSchema={SignupSchemaUser}
                 onSubmit={(values) => {
-                    console.log(values);
                     postUser(values);
                 }}>
                 {(props: FormikProps<IUser>) => {

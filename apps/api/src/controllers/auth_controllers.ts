@@ -14,10 +14,7 @@ const prisma = new PrismaClient();
 async function RegisterUser(req: Request, res: Response, next: NextFunction) {
     try {
         const { email, firstName, lastName, password, referralCode } = req.body;
-        console.log("Request body received: " + email + " " + firstName + " " + lastName + " " + "some password");
-        console.log(referralCode);
         if (referralCode) {
-            console.log("Referral code received: " + referralCode);
             const findRefCode = await prisma.users.findUnique({
                 where: {
                     referralCode: referralCode,
@@ -26,8 +23,6 @@ async function RegisterUser(req: Request, res: Response, next: NextFunction) {
             if (!findRefCode) {
                 throw new Error("Referral code is not valid");
             };
-        } else {
-            console.log("Referral code not used");
         };
 
         const findUser = await prisma.users.findUnique({
@@ -37,13 +32,11 @@ async function RegisterUser(req: Request, res: Response, next: NextFunction) {
         });
         if (findUser) {
             console.log("Duplicate email error");
-            console.log(findUser);
             throw new Error("Email already exists");
         };
 
         const salt = await genSalt(10);
         const hashPassword = await hash(password, salt);
-        console.log("salt and hash created");
 
         let refCode: string = "";
 
@@ -52,7 +45,6 @@ async function RegisterUser(req: Request, res: Response, next: NextFunction) {
             refCode = refCode.replace(/[^\w\s]/gi, '');
             refCode = refCode.slice(refCode.length - 15, refCode.length).toUpperCase();
 
-            // Uniqueness validation
             let findRefCode = await prisma.users.findUnique({
                 where: {
                     referralCode: refCode,
@@ -60,8 +52,6 @@ async function RegisterUser(req: Request, res: Response, next: NextFunction) {
             });
 
             function incrementString(str: string): string {
-                // 0-9, then A-Z. If already Z, then go to 0 and increment next char to the left.
-                // if all chars are Z, increment to all 0
                 function incrementChar(c: string): string {
                     let tc: number = c.charCodeAt(0) - 'A'.charCodeAt(0);
                     tc = (tc + 1) % 26;
@@ -83,7 +73,6 @@ async function RegisterUser(req: Request, res: Response, next: NextFunction) {
             };
 
             while (findRefCode) {
-                console.log("Duplicate refCode found: " + refCode);
                 incrementString(refCode);
                 findRefCode = await prisma.users.findUnique({
                     where: {
@@ -91,15 +80,12 @@ async function RegisterUser(req: Request, res: Response, next: NextFunction) {
                     },
                 });
             };
-
-            console.log("Unique refCode created: " + refCode);
         };
         await generateUniqueRefCode();
 
         let newUser;
 
         await prisma.$transaction(async (prisma) => {
-            console.log("prisma transaction started: creating user data");
             newUser = await prisma.users.create({
                 data: {
                     email: email,
@@ -109,8 +95,6 @@ async function RegisterUser(req: Request, res: Response, next: NextFunction) {
                     referralCode: refCode,
                 }
             });
-
-            console.log("prisma transaction successful: user data created");
         });
         
         const templatePath = path.join(
@@ -140,9 +124,7 @@ async function RegisterUser(req: Request, res: Response, next: NextFunction) {
             subject: "ConcertHub Registration Confirmation",
             html: html,
         });
-        console.log("Email sent");
-    
-        console.log("User registration added to database");
+
         res.status(200).send({
             message: "Register successful!",
             data: newUser,
@@ -156,9 +138,7 @@ async function RegisterUser(req: Request, res: Response, next: NextFunction) {
 async function VerifyUser(req: Request, res: Response, next: NextFunction) {
     try {
         const { email, refCode } = req.user as User;
-        console.log("Email from JSON Web Token: " + email);
         await prisma.$transaction(async (prisma) => {
-            console.log("prisma transaction started: verifying email in database");
             const newUser = await prisma.users.update({
                 where: {
                     email: email,
@@ -169,7 +149,6 @@ async function VerifyUser(req: Request, res: Response, next: NextFunction) {
             });
 
             if (refCode) {
-                console.log("referral code valid: adding referral code bonuses");
                 const findRefCode = await prisma.users.findUnique({
                     where: {
                         referralCode: refCode,
@@ -182,7 +161,6 @@ async function VerifyUser(req: Request, res: Response, next: NextFunction) {
                         userID: newUser.id,
                     },
                 });
-                console.log("discount coupon created");
 
                 const expiryDate: Date = new Date();
                 expiryDate.setDate(expiryDate.getDate() + 90);
@@ -193,7 +171,6 @@ async function VerifyUser(req: Request, res: Response, next: NextFunction) {
                         expiryDate: expiryDate,
                     },
                 });
-                console.log("point balance data added");
 
                 await prisma.users.update({
                     where: {
@@ -203,11 +180,7 @@ async function VerifyUser(req: Request, res: Response, next: NextFunction) {
                         pointBalance: findRefCode!.pointBalance + 10000,
                     },
                 });
-                console.log("point balance updated for referrer");
-
-                console.log("referral code bonuses added");
             };
-            console.log("prisma transaction ended: emailVerified updated in database");
         });
 
         res.status(201).send({
@@ -221,7 +194,6 @@ async function VerifyUser(req: Request, res: Response, next: NextFunction) {
 async function LoginUser(req: Request, res: Response, next: NextFunction) {
     try {
         const { email, password } = req.body;
-        console.log("request body received: " + email);
         const findUser = await prisma.users.findUnique({
             where: {
                 email: email,
@@ -231,7 +203,6 @@ async function LoginUser(req: Request, res: Response, next: NextFunction) {
             console.log("email not found in database");
             throw new Error("Invalid credentials");
         };
-        console.log("email found");
 
         if (findUser.active === "Locked") {
             console.log("Account locked: Too many failed logins")
@@ -239,8 +210,6 @@ async function LoginUser(req: Request, res: Response, next: NextFunction) {
         };
 
         if (findUser.emailVerified === false) {
-            console.log("email not verified. attempting to resend verification email")
-
             const emailpayload = {
                 email: email
             };
@@ -264,14 +233,12 @@ async function LoginUser(req: Request, res: Response, next: NextFunction) {
                 subject: "ConcertHub Organizer Registration Confirmation",
                 html: html,
             });
-            console.log("verification email sent");
 
             throw new Error("Email not verified: A new verification email has been sent.");
         };
 
         const passwordMatches = await compare(password, findUser.password);
         if (!passwordMatches) {
-            console.log("incorrect password")
             await prisma.$transaction(async (prisma) => {
                 await prisma.users.update({
                     where: {
@@ -282,7 +249,6 @@ async function LoginUser(req: Request, res: Response, next: NextFunction) {
                     },
                 });
             });
-            console.log("incremented failedLogins");
 
             if (findUser.failedLogins >= 5) {
                 await prisma.$transaction(async (prisma) => {
@@ -298,7 +264,6 @@ async function LoginUser(req: Request, res: Response, next: NextFunction) {
             };
             throw new Error("Invalid credentials");
         };
-        console.log("password matches");
 
         await prisma.$transaction(async (prisma) => {
             await prisma.users.update({
@@ -320,14 +285,9 @@ async function LoginUser(req: Request, res: Response, next: NextFunction) {
             pointBalance: findUser.pointBalance,
         };
         const token = sign(payload, String(SECRET_KEY))
-        console.log("token created")
 
-        // throw new Error("test complete");
-
-        console.log("login successful: access token cookied")
         res.status(200)
         .cookie("access_token", token, { expires: new Date(new Date().valueOf() + 2400000) })
-        // .cookie("access_token_session", token)  // Session cookie
         .send({
             message: "Login successful!",
         });
@@ -517,7 +477,6 @@ async function GetTransactionDataByEventID(req: Request, res: Response, next: Ne
 async function RegisterOrganizer(req: Request, res: Response, next: NextFunction) {
     try {
         const { email, name, password } = req.body;
-        console.log("Request body received: " + email + " " + name + " " + "some password");
 
         const findUser = await prisma.organizers.findUnique({
             where: {
@@ -531,12 +490,10 @@ async function RegisterOrganizer(req: Request, res: Response, next: NextFunction
 
         const salt = await genSalt(10);
         const hashPassword = await hash(password, salt);
-        console.log("salt and hash created");
         
         let newOrganizer;
 
         await prisma.$transaction(async (prisma) => {
-            console.log("prisma transaction started: creating organizer data");
             newOrganizer = await prisma.organizers.create({
                 data: {
                     email: email,
@@ -544,7 +501,6 @@ async function RegisterOrganizer(req: Request, res: Response, next: NextFunction
                     password: hashPassword,
                 }
             });
-            console.log("prisma transaction concluded: organizer data created");
         });
 
         const payload = {
@@ -568,9 +524,7 @@ async function RegisterOrganizer(req: Request, res: Response, next: NextFunction
             subject: "ConcertHub Organizer Registration Confirmation",
             html: html,
         });
-        console.log("verification email sent");
     
-        console.log("Organizer registration added to database");
         res.status(200).send({
             message: "Register successful!",
             data: newOrganizer,
@@ -585,9 +539,7 @@ async function RegisterOrganizer(req: Request, res: Response, next: NextFunction
 async function VerifyOrganizer(req: Request, res: Response, next: NextFunction) {
     try {
         const { email } = req.organizer as Organizer;
-        console.log("Email from JSON Web Token: " + email);
         await prisma.$transaction(async (prisma) => {
-            console.log("prisma transaction started: verifying email in database");
             await prisma.organizers.update({
                 where: {
                     email: email,
@@ -596,7 +548,6 @@ async function VerifyOrganizer(req: Request, res: Response, next: NextFunction) 
                     emailVerified: true,
                 },
             });
-            console.log("prisma transaction ended: emailVerified updated in database");
         });
 
         res.status(201).send({
@@ -610,7 +561,6 @@ async function VerifyOrganizer(req: Request, res: Response, next: NextFunction) 
 async function LoginOrganizer(req: Request, res: Response, next: NextFunction) {
     try {
         const { email, password } = req.body;
-        console.log("request body received");
         const findUser = await prisma.organizers.findUnique({
             where: {
                 email: email,
@@ -619,7 +569,6 @@ async function LoginOrganizer(req: Request, res: Response, next: NextFunction) {
         if (!findUser) {
             throw new Error("Invalid credentials");
         };
-        console.log("email found");
 
         if (findUser.failedLogins >= 5) {
             console.log("Account locked: Too many failed logins")
@@ -630,7 +579,6 @@ async function LoginOrganizer(req: Request, res: Response, next: NextFunction) {
         if (!passwordMatches) {
             throw new Error("Invalid credentials");
         };
-        console.log("password matches");
 
         await prisma.$transaction(async (prisma) => {
             await prisma.organizers.update({
@@ -644,7 +592,6 @@ async function LoginOrganizer(req: Request, res: Response, next: NextFunction) {
         });
 
         if (findUser.emailVerified === false) {
-            console.log("email not verified. attempting to resend verification email")
 
             const emailpayload = {
                 email: email
@@ -668,7 +615,6 @@ async function LoginOrganizer(req: Request, res: Response, next: NextFunction) {
                 subject: "ConcertHub Organizer Registration Confirmation",
                 html: html,
             });
-            console.log("verification email sent");
 
             throw new Error("Email not verified: A new verification email has been sent.");
         };
@@ -680,14 +626,9 @@ async function LoginOrganizer(req: Request, res: Response, next: NextFunction) {
             role: "organizer",
         };
         const token = sign(payload, String(SECRET_KEY))
-        console.log("token created")
 
-        // throw new Error("test complete");
-
-        console.log("login successful: access token cookied")
         res.status(200)
         .cookie("access_token", token, { expires: new Date(new Date().valueOf() + 2400000) })
-        // .cookie("access_token_session", token)  // Session cookie
         .send({
             message: "Login successful!",
         });
@@ -719,55 +660,6 @@ async function GetOrganizerNameByID(req: Request, res: Response, next: NextFunct
         next(err);
     };
 };
-
-// async function UploaderAssist(req: Request, res: Response, next: NextFunction) {
-//     try {
-//         const { file } = req;
-//         const { name } = req.body;
-
-//         console.log(file);
-//         console.log(name);
-
-//         if (!file) {
-//             throw new Error("No file uploaded")
-//         };
-
-//         res.status(200).send({
-//             message: "File uploaded",
-//         });
-//     } catch(err) {
-//         next(err);
-//     };
-// };
-
-// async function UploadUpdate(req: Request, res: Response, next: NextFunction) {
-//     try {
-//         const { file } = req;
-//         const { email } = req.user as User;
-
-//         console.log(file);
-//         console.log(email);
-
-//         if (!file) {
-//             throw new Error("No file uploaded")
-//         };
-
-//         await prisma.users.update({
-//             where: {
-//                 email: email,
-//             },
-//             data: {
-//                 image: file?.filename,
-//             },
-//         });
-
-//         res.status(200).send({
-//             message: "File uploaded",
-//         });
-//     } catch(err) {
-//         next(err);
-//     };
-// };
 
 async function GetEventDiscountDataByEventID(req: Request, res: Response, next: NextFunction) {
     try {
@@ -875,7 +767,6 @@ async function RegisterEventByOrganizerID(req: Request, res: Response, next: Nex
         let newEvent;
 
         await prisma.$transaction(async (prisma) => {
-            console.log("prisma transaction started: creating event data");
             newEvent = await prisma.events.create({
                 data: {
                     image: image,
@@ -893,10 +784,8 @@ async function RegisterEventByOrganizerID(req: Request, res: Response, next: Nex
                     organizerID: parseInt(id),
                 },
             });
-            console.log("prisma transaction concluded: event data created");
         });
     
-        console.log("Event registration added to database");
         res.status(200).send({
             message: "Event creation successful!",
             data: newEvent,

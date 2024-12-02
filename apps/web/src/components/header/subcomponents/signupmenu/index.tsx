@@ -17,7 +17,6 @@ export default function SignupMenu() {
         const button2 = document.getElementById("roleselectorganizerlabelsignup") as HTMLSpanElement;
         
         if (role == 1) {
-            console.log("signup menu changed to participant");
             button1.style.backgroundColor = "rgb(185, 228, 248)";
             button2.style.backgroundColor = "transparent";
             menu1.style.zIndex = "1";
@@ -25,7 +24,6 @@ export default function SignupMenu() {
             menu1.style.display = "block";
             menu2.style.display = "none";
         } else if (role == 2) {
-            console.log("signup menu changed to organizer");
             button1.style.backgroundColor = "transparent";
             button2.style.backgroundColor = "rgb(185, 228, 248)";
             menu1.style.zIndex = "-1";
@@ -33,7 +31,6 @@ export default function SignupMenu() {
             menu1.style.display = "none";
             menu2.style.display = "block";
         } else {
-            console.log("page loaded");
             button1.style.backgroundColor = "transparent";
             button2.style.backgroundColor = "transparent";
             menu1.style.zIndex = "-1";

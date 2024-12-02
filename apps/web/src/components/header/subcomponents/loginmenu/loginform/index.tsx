@@ -23,14 +23,10 @@ export default function LoginForm() {
             } else {
                 throw new Error("Invalid slice value: " + n);
             }
-            console.log(API);
-            // console.log(params.name + " " + params.email + " " + params.password);
             const output = await axios.post(API, {
                 email: params.email,
                 password: params.password,
             }, { withCredentials: true });
-            
-            console.log(output);
 
             const isLoginPage = window.location.href.startsWith(process.env.NEXT_PUBLIC_BASE_WEB_URL + "/login");
             if (isLoginPage) {
@@ -54,7 +50,6 @@ export default function LoginForm() {
                 }}
                 validationSchema={LoginSchema}
                 onSubmit={(values) => {
-                    // console.log(values);
                     postLogin(values);
                 }}>
                 {(props: FormikProps<IUser>) => {

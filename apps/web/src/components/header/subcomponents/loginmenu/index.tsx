@@ -21,17 +21,14 @@ export default function LoginMenu() {
         const button2 = document.getElementById("roleselectorganizerlabellogin") as HTMLSpanElement;
         
         if (n === 1) {
-            console.log("login menu changed to participant");
             button1.style.backgroundColor = "rgb(185, 228, 248)";
             button2.style.backgroundColor = "transparent";
             menu.style.zIndex = "1";
         } else if (n === 2) {
-            console.log("login menu changed to organizer");
             button1.style.backgroundColor = "transparent";
             button2.style.backgroundColor = "rgb(185, 228, 248)";
             menu.style.zIndex = "1";
         } else {
-            console.log("page loaded");
             button1.style.backgroundColor = "transparent";
             button2.style.backgroundColor = "transparent";
             menu.style.zIndex = "-1";

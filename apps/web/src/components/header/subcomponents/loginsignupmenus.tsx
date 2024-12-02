@@ -17,20 +17,16 @@ export default function LoginSignup() {
     const decodedToken: AccessTokenUser | AccessTokenOrganizer | null = VerifyTokenClient();
 
     useEffect(() => {
-        console.log("state changed: " + n);
         const loginMenu = document.getElementById("loginmenudiv") as HTMLDivElement;
         const signupMenu = document.getElementById("signupmenudiv") as HTMLDivElement;
         
         if (n === 1) {
-            console.log("doing useEffect for login");
             loginMenu.style.display = "grid";
             signupMenu.style.display = "none";
         } else if (n === 2) {
-            console.log("doing useEffect for signup");
             loginMenu.style.display = "none";
             signupMenu.style.display = "grid";
         } else {
-            console.log("doing useEffect for reset or page loaded");
             loginMenu.style.display = "none";
             signupMenu.style.display = "none";
         };
@@ -65,7 +61,6 @@ export default function LoginSignup() {
                             removeCookie("access_token", { path: "/" });
                             removeSession("access_token_session", { path: "/" });
                             sessionStorage.removeItem("access_token");
-                            console.log("access tokens removed");
                         }}>
                             Log out
                         </button>

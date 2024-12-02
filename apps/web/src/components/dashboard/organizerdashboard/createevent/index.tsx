@@ -5,44 +5,8 @@ import { EventSchema } from "./schema";
 import axios from "axios";
 import { CreateEvent } from "@/interfaces/createevent";
 import VerifyTokenClient from "@/functions/verifytokenclient";
-import { useEffect, useState } from "react";
 
 export default function CreateEventView() {
-    // const [artistCount, setCount] = useState<number>(1);
-    // let currentCount = 0;
-
-    // function removeInput() {
-    //     const e = document.activeElement?.parentElement;
-    //     if (e) {
-    //         e.remove();
-    //     };
-    // };
-
-    // useEffect(() => {
-    //     if (artistCount === currentCount) {
-    //         console.log("same count!?");
-    //     } else if (artistCount > currentCount) {
-    //         const form = document.getElementById("artistinputform") as HTMLFormElement;
-    //         const artistInput = document.createElement("div");
-    //         artistInput.className = "w-full flex flex-col gap-6";
-
-    //         const input = document.createElement("input");
-    //         input.type = "text";
-    //         input.name = `artist${artistCount}`;
-    //         input.className = "border border-black rounded-md px-2 artistinputclass";
-    //         // input.id = `artistinput${artistCount}`;
-    //         artistInput.appendChild(input);
-
-    //         document.getElementsByClassName("")
-
-    //         form.appendChild(artistInput)
-
-    //         currentCount = artistCount;
-    //     } else {
-    //         currentCount = artistCount;
-    //     };
-    // }, [artistCount]);
-
     const decodedToken = VerifyTokenClient();
     if (!decodedToken) {
         console.log("No token found");
@@ -66,8 +30,6 @@ export default function CreateEventView() {
                 VIPPrice: params.VIPPrice,
                 discountType: params.discountType,
             });
-            
-            console.log(output);
         } catch(err) {
             console.log(err);
         };
@@ -93,7 +55,6 @@ export default function CreateEventView() {
                     }}
                     validationSchema={EventSchema}
                     onSubmit={(values) => {
-                        // console.log(values);
                         postEvent(values);
                     }}>
                     {(props: FormikProps<CreateEvent>) => {
@@ -130,7 +91,6 @@ export default function CreateEventView() {
                                         <div className="text-xs text-red-600">{errors.overview}</div>
                                     ) : null}
                                 </div>
-                                {/* Artists input form */}
                                 <div className="flex flex-col gap-1">
                                     <label htmlFor="genre" className="text-sm">Genre </label>  {/* Should be a radio input */}
                                     <Field type="text" name="genre" onChange={handleChange} values={values.genre} placeholder="Classical, Jazz, Pop, etc..." aria-label="Genre text box"
