@@ -1,5 +1,4 @@
 import { AccessTokenOrganizer, AccessTokenUser } from "@/interfaces/accesstokens";
-import { verify } from "jsonwebtoken";
 import { jwtDecode } from "jwt-decode";
 import { useCookies } from "react-cookie";
 
