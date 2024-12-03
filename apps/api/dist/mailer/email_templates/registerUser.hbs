@@ -1,0 +1,27 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="UTF-8" />
+        <meta name="viewport" content="width=device-width">
+        <title>ConcertHub Participant Registration Confirmation</title>
+    </head>
+    <body>
+        <div>
+            <h2>Thank you for signing up with ConcertHub!</h2>
+            <p>Your account has been created under these credentials:</p>
+            <div>
+                <ul>
+                    <li>Name: {{firstName}} {{ln}}</li>
+                    <li>Email: {{email}}</li>
+                </ul>
+            </div>
+            <div>In order to access your account, you will have to verify your email address by clicking on the link below.</div>
+            <div>Your verification token will expire in 3 hours.</div>
+            <div>If you are unable to verify at this time, another verification email will be sent when you attempt to log in, but referral code bonuses will be lost.</div>
+        </div>
+        <hl></hl>
+        <div>
+            <a href={{verifyURL}}>Verify</a>
+        </div>
+    </body>
+</html>
