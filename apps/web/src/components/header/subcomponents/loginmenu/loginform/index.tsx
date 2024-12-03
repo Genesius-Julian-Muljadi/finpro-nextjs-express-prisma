@@ -8,6 +8,7 @@ import { useDispatch, useSelector } from "react-redux";
 import { useRouter } from "next/navigation";
 import { toggleMenu } from "@/redux/slices/togglemenu";
 import ErrorHandler from "@/errorhandler/error-handler";
+import Swal from "sweetalert2";
 
 export default function LoginForm() {
     let n = useSelector((state: {LRSSlice: {actionSelected: number}}) => state.LRSSlice.actionSelected);
@@ -32,6 +33,11 @@ export default function LoginForm() {
             loginMenu.style.display = "none";
 
             dispatch(toggleMenu('reset'));
+
+            Swal.fire({
+              icon: "success",
+              title: "Login success!",
+            });
         } catch(err) {
             ErrorHandler(err);
         };
