@@ -7,16 +7,14 @@ export default function VerifyTokenClient(): AccessTokenUser | AccessTokenOrgani
     // Token verification using react hook for client components
     const [cookies, setCookie, removeCookie] = useCookies(['access_token']);
 
-    let decodedToken: AccessTokenUser | AccessTokenOrganizer | null = null;
     const token = cookies.access_token;
     if (!token) {
         return null;
+    } else if (token == "-") {
+        removeCookie("access_token");
     };
-    if (verify(token, String(process.env.NEXT_PUBLIC_SECRET_KEY))) {
-        decodedToken = jwtDecode(String(token));
-    } else {
-        throw new Error("Unauthorized token!");
-    };
+
+    const decodedToken: AccessTokenUser | AccessTokenOrganizer = jwtDecode(String(token));
 
     return decodedToken;
 };
