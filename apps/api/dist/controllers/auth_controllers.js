@@ -307,6 +307,7 @@ function LoginUser(req, res, next) {
                 .cookie("access_token", token, { expires: new Date(new Date().valueOf() + 2400000) })
                 .send({
                 message: "Login successful!",
+                cookie: token,
             });
         }
         catch (err) {
@@ -648,6 +649,7 @@ function LoginOrganizer(req, res, next) {
                 .cookie("access_token", token, { expires: new Date(new Date().valueOf() + 2400000) })
                 .send({
                 message: "Login successful!",
+                cookie: token,
             });
         }
         catch (err) {
