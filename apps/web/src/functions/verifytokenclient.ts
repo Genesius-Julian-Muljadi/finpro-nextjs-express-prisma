@@ -11,6 +11,7 @@ export default function VerifyTokenClient(): AccessTokenUser | AccessTokenOrgani
         return null;
     } else if (token == "-") {
         removeCookie("access_token");
+        return null;
     };
 
     const decodedToken: AccessTokenUser | AccessTokenOrganizer = jwtDecode(String(token));
