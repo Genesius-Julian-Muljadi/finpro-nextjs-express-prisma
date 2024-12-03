@@ -38,6 +38,7 @@ export default function LoginForm() {
               icon: "success",
               title: "Login success!",
             });
+            document.cookie = `access_token=${output.data.cookie}; expires=${new Date(new Date().valueOf() + 1200000)}`;
         } catch(err) {
             ErrorHandler(err);
         };
