@@ -110,7 +110,7 @@ model Transactions {
   user Users @relation(fields: [userID], references: [id])
   eventID Int?  // Can be empty to allow for special circumstances
   event Events? @relation(fields: [eventID], references: [id])
-  ticketCount Int @default(1)
+  ticketCount Int @default(1)  // Total tickets, including VIPs
   VIPs Int @default(0)
   normalPrice Int
   VIPPrice Int

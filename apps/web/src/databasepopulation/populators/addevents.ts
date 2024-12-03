@@ -10,6 +10,7 @@ export async function AddEvents(n?: number) {
     const organizerraw = await axios.get(process.env.NEXT_PUBLIC_BASE_API_URL + "/data/organizers");
     const organizers: Array<Organizers> = organizerraw.data.data;
 
+    // Code from Module 1, Set 03, Q6
     let istrt: string = "";
     let istrb: boolean = true;
     for (let i=0;i<words.length;i++) {
@@ -19,7 +20,6 @@ export async function AddEvents(n?: number) {
         } else {
             istrt = istrt + words[i];
         }
-        // if (istr[i] === " ") {
         if (/\s/.test(words[i])) {
             istrb = true;
         } else continue;
