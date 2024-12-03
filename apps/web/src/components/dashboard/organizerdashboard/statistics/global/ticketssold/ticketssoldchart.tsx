@@ -279,8 +279,8 @@ class GlobalTicketsSold extends Component<{
               <form className="ml-3 hidden" id="globalticketsform">
                 <select onChange={(e) => {this.updateChart("yearly", parseInt(e.target.value))}}
                   className="cursor-pointer w-32 h-8 bg-slate-600 bg-opacity-0 hover:bg-opacity-20 pl-2 rounded-md shadow-sm shadow-slate-600">
-                    {this.yearlys.map((item) => (
-                      <option key={item} value={item}>{item}</option>
+                    {this.yearlys.map((item, index) => (
+                      <option key={index} value={this.yearlys[(this.yearlys.length - index) - 1]}>{this.yearlys[(this.yearlys.length - index) - 1]}</option>
                     ))}
                 </select>
               </form>
