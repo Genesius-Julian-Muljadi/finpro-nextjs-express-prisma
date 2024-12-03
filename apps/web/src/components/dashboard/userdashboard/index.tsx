@@ -53,8 +53,8 @@ export default async function UserDashboard({ token }: { token: AccessTokenUser 
                     <div className="col-start-3 col-end-4 row-start-1 row-end-2 text-right">
                         Referral code: {token.refCode}
                     </div>
-                    <div className="grid grid-cols-2 grid-rows-1">
-                        <div className="col-start-1 col-end-2 row-start-1 row-end-2 flex flex-col gap-0 *:text-center">
+                    <div className="grid grid-cols-1 grid-rows-2 sm:grid-cols-2 sm:grid-rows-1">
+                        <div className="flex flex-col gap-0 *:text-center">
                             <div className="border border-black">
                                 Point balance: {activePointsTotal.toLocaleString("id-ID")}
                             </div>
@@ -87,7 +87,7 @@ export default async function UserDashboard({ token }: { token: AccessTokenUser 
                                 </div>
                             </div>
                         </div>
-                        <div className="col-start-2 col-end-3 row-start-1 row-end-2 flex flex-col gap-0 *:text-center">
+                        <div className="flex flex-col gap-0 *:text-center">
                             <div className="border border-black">
                                 Coupons: {coupons.length}
                             </div>
@@ -100,6 +100,7 @@ export default async function UserDashboard({ token }: { token: AccessTokenUser 
                                         <table className="border border-black">
                                             <thead>
                                                 <tr className="*:border *:border-gray-700">
+                                                    <th>Active</th>
                                                     <th>Discount</th>
                                                     <th>Expiry</th>
                                                     <th>Received from</th>
@@ -109,6 +110,7 @@ export default async function UserDashboard({ token }: { token: AccessTokenUser 
                                             <tbody>
                                                 {coupons?.map((item) => (
                                                     <tr key={item.id} className="*:border *:border-gray-700">
+                                                        <td>{item.active ? "Active" : "Used"}</td>
                                                         <td>{item.discount}%</td>
                                                         <td>{item.expiryDate ? new Date(item.expiryDate).toLocaleDateString() : "-"}</td>
                                                         <td>{item.organizerName === "admin" ? "Referral code" : item.organizerName}</td>

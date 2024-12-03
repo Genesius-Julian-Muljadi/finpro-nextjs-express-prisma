@@ -7,11 +7,11 @@ import { IUser } from "@/interfaces/loginform";
 import { useDispatch, useSelector } from "react-redux";
 import { useRouter } from "next/navigation";
 import { toggleMenu } from "@/redux/slices/togglemenu";
+import ErrorHandler from "@/errorhandler/error-handler";
 
 export default function LoginForm() {
     let n = useSelector((state: {LRSSlice: {actionSelected: number}}) => state.LRSSlice.actionSelected);
     const dispatch = useDispatch();
-    const router = useRouter();
 
     const postLogin = async (params: IUser) => {
         try {
@@ -28,16 +28,12 @@ export default function LoginForm() {
                 password: params.password,
             }, { withCredentials: true });
 
-            // const isLoginPage = window.location.href.startsWith(process.env.NEXT_PUBLIC_BASE_WEB_URL + "/login");
-            // if (isLoginPage) {
-                const loginMenu = document.getElementById("loginmenudiv") as HTMLDivElement;
-                loginMenu.style.display = "none";
-            //     router.push("/");
-            // };
+            const loginMenu = document.getElementById("loginmenudiv") as HTMLDivElement;
+            loginMenu.style.display = "none";
 
             dispatch(toggleMenu('reset'));
         } catch(err) {
-            console.log(err);
+            ErrorHandler(err);
         };
     };
 

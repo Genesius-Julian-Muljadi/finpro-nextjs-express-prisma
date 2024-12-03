@@ -6,6 +6,7 @@ import axios from "axios";
 import { SignupSchemaOrganizer } from "../schema";
 import { toggleMenu } from "@/redux/slices/togglemenu";
 import { useDispatch } from "react-redux";
+import ErrorHandler from "@/errorhandler/error-handler";
 
 export default function SignupMenuOrganizer() {
     const dispatch = useDispatch();
@@ -19,7 +20,7 @@ export default function SignupMenuOrganizer() {
                 password: params.password,
             });
         } catch(err) {
-            console.log(err);
+            ErrorHandler(err);
         };
     };
 

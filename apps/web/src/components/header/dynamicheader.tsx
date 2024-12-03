@@ -15,8 +15,8 @@ export default function DynamicHeader() {
     try {
         return (
             <div className="grid grid-cols-1 grid-rows-1 mb-20 z-[49]">
-              <div className="fixed h-9 w-screen sm:pr-6 sm:h-12 col-start-1 row-start-1 bg-[#81b1f8] shadow-md shadow-[#302e45] grid grid-cols-12 grid-rows-1 *:my-auto *:text-center">
-                <div className="col-start-1 col-end-3 row-start-1 row-end-2 cursor-pointer flex h-full px-4 sm:px-10 mx-auto place-content-center bg-slate-600 bg-opacity-0 hover:bg-opacity-15 active:bg-opacity-25" aria-label="Concert Hub Logo"
+              <div className="fixed h-9 w-screen sm:pr-6 sm:h-12 col-start-1 row-start-1 bg-[#81b1f8] shadow-md shadow-[#302e45] grid grid-cols-5 sm:grid-cols-12 grid-rows-1 *:my-auto *:text-center">
+                <div className="col-start-1 col-end-2 sm:col-end-3 row-start-1 row-end-2 cursor-pointer flex h-full px-4 sm:px-10 mx-auto place-content-center bg-slate-600 bg-opacity-0 hover:bg-opacity-15 active:bg-opacity-25" aria-label="Concert Hub Logo"
                 onClick={() => {router.push("/")}}>
                   <div className="m-auto hidden sm:flex flex-row gap-2">
                     <FontAwesomeIcon icon={faMusic} />
@@ -28,15 +28,12 @@ export default function DynamicHeader() {
                     <FontAwesomeIcon icon={faMusic} />
                   </div>
                 </div>
-                <div className="col-start-3 col-end-10 row-start-1 row-end-2">
+                <div className="hidden sm:flex sm:col-start-3 sm:col-end-10 row-start-1 row-end-2">
                   Search bar with filters
                 </div>
-                <div className="col-start-10 col-end-13 row-start-1 row-end-2">
+                <div className="col-start-3 col-end-6 sm:col-start-10 sm:col-end-13 row-start-1 row-end-2">
                   <LoginSignup />
                 </div>
-                <button className="hidden col-start-10 col-end-11 row-start-1 row-end-2 size-4 border border-black" onClick={() => {console.log(cookies);}}>
-                  Check access_token cookie
-                </button>
               </div>
               <div className="col-start-1 row-start-1 z-50">
                 <LoginMenu />

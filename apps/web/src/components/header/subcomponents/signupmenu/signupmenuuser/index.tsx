@@ -6,6 +6,8 @@ import axios from "axios";
 import { SignupSchemaUser } from "../schema";
 import { useDispatch } from "react-redux";
 import { toggleMenu } from "@/redux/slices/togglemenu";
+import Swal from "sweetalert2";
+import ErrorHandler from "@/errorhandler/error-handler";
 
 export default function SignupMenuUser() {
     const dispatch = useDispatch()
@@ -20,8 +22,12 @@ export default function SignupMenuUser() {
                 password: params.password,
                 referralCode: params.referralCode,
             });
+            Swal.fire({
+              icon: "success",
+              title: "Signup success! Please verify your email to log in.",
+            });
         } catch(err) {
-            console.log(err);
+            ErrorHandler(err);
         };
     };
 

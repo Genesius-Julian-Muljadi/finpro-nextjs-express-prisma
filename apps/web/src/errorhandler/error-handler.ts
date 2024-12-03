@@ -8,7 +8,5 @@ export default function ErrorHandler(err: any) {
   Swal.fire({
     icon: "error",
     title: message,
-    showConfirmButton: false,
-    timer: 2000,
   });
 };
