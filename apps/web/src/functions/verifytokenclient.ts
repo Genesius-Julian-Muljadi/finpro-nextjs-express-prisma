@@ -9,8 +9,11 @@ export default function VerifyTokenClient(): AccessTokenUser | AccessTokenOrgani
 
     let decodedToken: AccessTokenUser | AccessTokenOrganizer | null = null;
     const token = cookies.access_token;
+    if (!token) {
+        return null;
+    };
     if (verify(token, String(process.env.NEXT_PUBLIC_SECRET_KEY))) {
-        decodedToken = jwtDecode(String(cookies.access_token));
+        decodedToken = jwtDecode(String(token));
     } else {
         throw new Error("Unauthorized token!");
     };

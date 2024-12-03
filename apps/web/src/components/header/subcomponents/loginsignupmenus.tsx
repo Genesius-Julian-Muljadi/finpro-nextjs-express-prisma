@@ -62,6 +62,7 @@ export default function LoginSignup() {
                                 router.push("/");
                                 removeCookie("access_token", { path: "/" });
                                 removeSession("access_token_session", { path: "/" });
+                                // Vercel cookie issue fix
                                 document.cookie = `access_token=-; expires=${new Date(0)}`;
                             }}>
                                 Log out
