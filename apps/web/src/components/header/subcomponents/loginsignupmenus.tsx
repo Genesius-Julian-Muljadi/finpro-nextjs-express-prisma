@@ -62,7 +62,7 @@ export default function LoginSignup() {
                                 router.push("/");
                                 removeCookie("access_token", { path: "/" });
                                 removeSession("access_token_session", { path: "/" });
-                                document.cookie = `access_token=-; expires=1`;
+                                document.cookie = `access_token=-; expires=${new Date(0)}`;
                             }}>
                                 Log out
                             </button>
