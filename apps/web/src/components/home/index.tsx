@@ -31,9 +31,7 @@ export default async function HomeView() {
             <div>
                 <div className="flex flex-col gap-6 mx-2 sm:mx-10">
                     <div className="flex flex-col gap-2">
-                        <p>Site incomplete. This was a 2-man project, but my partner dropped out.</p>
-                        <p>Current features: Login & Authentication, Referral codes & discounts, Dashboards & statistics</p>
-                        <p>Missing features: Search, Event pages, creation, transactions, & ratings</p>
+                        <p>Site incomplete. This was a 2-man project, but my partner dropped out. All work done is by me alone. Details in footer.</p>
                     </div>
                     <div className="flex flex-col sm:grid sm:grid-cols-5 sm:mx-10 md:mx-20 mb-4 shadow-lg shadow-[#22253b]">
                         <div className="sm:col-start-1 sm:col-end-4">
