@@ -28,11 +28,16 @@ This project was meant as a 2-man project, but my partner was unable to complete
 ### Project Setup
 
 - **Prerequisites**
+
   TypeScript
+
   - **Back-end**: Node.js, Express.js
   - **Front-end**: Next.js with React & TypeScript
+  
 - **Easy Installation (Run in terminal)**
+
   - **Back-end**: Run in `./apps/api`.
+
     ##### `npm init --y`
     ##### `npm i typescript @types/node ts-node nodemon -D`
     ##### `npx tsc --init`
@@ -58,7 +63,9 @@ This project was meant as a 2-man project, but my partner was unable to complete
     ##### `npm i helmet`
     ##### `npm i milliseconds`
     ##### `npm i -D @types/milliseconds`
+
   - **Front-end**: Run in `./apps/web`.
+
     ##### `npx create-next-app@latest .`
     ##### `npm install @jridgewell/gen-mapping`
     ##### `npm i axios formik yup`
@@ -71,7 +78,9 @@ This project was meant as a 2-man project, but my partner was unable to complete
     ##### `npm i apexcharts --save`
     ##### `npm install --save react-apexcharts`
     ##### `npm i @reduxjs/toolkit react-redux`
+
 - **Environment Variables**
+
   - **Back-end**: .env in `./apps/api`.
     ##### SECRET_KEY="I12edasc*&9vmid3CND*"
     ##### SECRET_KEY2="secondkey2983u409wo"
@@ -82,15 +91,21 @@ This project was meant as a 2-man project, but my partner was unable to complete
     ##### BASE_WEB_URL="http://localhost:3000"
     ##### DATABASE_URL="postgresql://postgres.iozenelazdhyuxlnpskl:Ae9yNVKr8*ydMcv@aws-0-ap-southeast-1.pooler.supabase.com:6543/postgres?pgbouncer=true"
     ##### DIRECT_URL="postgresql://postgres.iozenelazdhyuxlnpskl:Ae9yNVKr8*ydMcv@aws-0-ap-southeast-1.pooler.supabase.com:5432/postgres"
+
   - **Front-end**: .env in `./apps/web`.
+
     ##### NEXT_PUBLIC_BASE_API_URL=http://localhost:8080
     ##### NEXT_PUBLIC_BASE_WEB_URL=http://localhost:3000
     ##### NEXT_PUBLIC_SECRET_KEY=I12edasc*&9vmid3CND*
+
 - **Running the Project Locally**
+
   1.  Open terminals both in `./apps/api` and `./apps/web`.
   2.  Run `npm run dev` on both.
   3.  Open `http://localhost:3000` on your preferred browser.
+
 - **Database Management**
+
   Run `npx prisma migrate dev` to sync Prisma with the database.
 
 ### Folders
