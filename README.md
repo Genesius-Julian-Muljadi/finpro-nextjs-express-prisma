@@ -59,37 +59,37 @@ This project was meant as a 2-man project, but my partner was unable to complete
     ##### `npm i milliseconds`
     ##### `npm i -D @types/milliseconds`
   - **Front-end**: Run in `./apps/web`.
-    `npx create-next-app@latest .`
-    `npm install @jridgewell/gen-mapping`
-    `npm i axios formik yup`
-    `npm i --save @fortawesome/fontawesome-svg-core`
-    `npm i --save @fortawesome/free-solid-svg-icons`
-    `npm i --save @fortawesome/free-regular-svg-icons`
-    `npm i --save @fortawesome/free-brands-svg-icons`
-    `npm i --save @fortawesome/react-fontawesome@latest`
-    `npm i sweetalert2`
-    `npm i apexcharts --save`
-    `npm install --save react-apexcharts`
-    `npm i @reduxjs/toolkit react-redux`
+    ##### `npx create-next-app@latest .`
+    ##### `npm install @jridgewell/gen-mapping`
+    ##### `npm i axios formik yup`
+    ##### `npm i --save @fortawesome/fontawesome-svg-core`
+    ##### `npm i --save @fortawesome/free-solid-svg-icons`
+    ##### `npm i --save @fortawesome/free-regular-svg-icons`
+    ##### `npm i --save @fortawesome/free-brands-svg-icons`
+    ##### `npm i --save @fortawesome/react-fontawesome@latest`
+    ##### `npm i sweetalert2`
+    ##### `npm i apexcharts --save`
+    ##### `npm install --save react-apexcharts`
+    ##### `npm i @reduxjs/toolkit react-redux`
 - **Environment Variables**
-  - **Back-end**: .env in `./apps/api`
-    SECRET_KEY="I12edasc*&9vmid3CND*"
-    SECRET_KEY2="secondkey2983u409wo"
-    PORT=8080
-    NODEMAILER_EMAIL="miniprojectpurwadhika@gmail.com"
-    NODEMAILER_PASSWORD="rcom afcn hdup yayf"
-    ADMIN_EMAIL="juliangenesiusmuljadi@gmail.com"
-    BASE_WEB_URL="http://localhost:3000"
-    DATABASE_URL="postgresql://postgres.iozenelazdhyuxlnpskl:Ae9yNVKr8*ydMcv@aws-0-ap-southeast-1.pooler.supabase.com:6543/postgres?pgbouncer=true"
-    DIRECT_URL="postgresql://postgres.iozenelazdhyuxlnpskl:Ae9yNVKr8*ydMcv@aws-0-ap-southeast-1.pooler.supabase.com:5432/postgres"
-  - **Front-end**: .env in `./apps/web`
-    NEXT_PUBLIC_BASE_API_URL=http://localhost:8080
-    NEXT_PUBLIC_BASE_WEB_URL=http://localhost:3000
-    NEXT_PUBLIC_SECRET_KEY=I12edasc*&9vmid3CND*
+  - **Back-end**: .env in `./apps/api`.
+    ##### SECRET_KEY="I12edasc*&9vmid3CND*"
+    ##### SECRET_KEY2="secondkey2983u409wo"
+    ##### PORT=8080
+    ##### NODEMAILER_EMAIL="miniprojectpurwadhika@gmail.com"
+    ##### NODEMAILER_PASSWORD="rcom afcn hdup yayf"
+    ##### ADMIN_EMAIL="juliangenesiusmuljadi@gmail.com"
+    ##### BASE_WEB_URL="http://localhost:3000"
+    ##### DATABASE_URL="postgresql://postgres.iozenelazdhyuxlnpskl:Ae9yNVKr8*ydMcv@aws-0-ap-southeast-1.pooler.supabase.com:6543/postgres?pgbouncer=true"
+    ##### DIRECT_URL="postgresql://postgres.iozenelazdhyuxlnpskl:Ae9yNVKr8*ydMcv@aws-0-ap-southeast-1.pooler.supabase.com:5432/postgres"
+  - **Front-end**: .env in `./apps/web`.
+    ##### NEXT_PUBLIC_BASE_API_URL=http://localhost:8080
+    ##### NEXT_PUBLIC_BASE_WEB_URL=http://localhost:3000
+    ##### NEXT_PUBLIC_SECRET_KEY=I12edasc*&9vmid3CND*
 - **Running the Project Locally**
   1.  Open terminals both in `./apps/api` and `./apps/web`.
   2.  Run `npm run dev` on both.
-  3.  Open `http://localhost:3000 on your preferred browser.
+  3.  Open `http://localhost:3000` on your preferred browser.
 - **Database Management**
   Run `npx prisma migrate dev` to sync Prisma with the database.
 
