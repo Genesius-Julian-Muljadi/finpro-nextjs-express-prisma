@@ -106,9 +106,9 @@ This project was meant as a 2-man project, but my partner was unable to complete
 
 - **Database Management**
 
-  Organizer #1 must be named 'admin'. Other admin parameters are modifiable.
+  - Organizer #1 must be named 'admin'. Other admin parameters are modifiable.
     - This is referred to under Prisma model: Coupons (./apps/api/prisma/schema.prisma)
-  Run `npx prisma migrate dev` to sync Prisma with the database.
+  - Run `npx prisma migrate dev` to sync Prisma with the database.
 
 ### Folders
 
