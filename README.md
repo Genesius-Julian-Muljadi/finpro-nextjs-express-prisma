@@ -1,76 +1,118 @@
-# Purwadhika Final Project Repository
+# Purwadhika Mini Project Repository
 
-This project uses React.js with NextJS for the frontend, Express.js for the backend, and TurboRepo for monorepo management, facilitating rapid development of a scalable web application with streamlined collaboration and efficient server-client interactions.
+### Event Management Platform
 
-## Available Scripts
+- Project Goals & Parameters: https://docs.google.com/document/d/1JkNlK4M180IyCoRk3aQsXiDIdG10uXhJVKVMTgk9qM4/edit?tab=t.0#heading=h.j7ohfg6cqy5p
 
-### `npm run dev`
+### ConcertHub
 
-Runs the app in the development mode.
+ConcertHub is a concert-management platform built with TypeScript, Express.js for Back-end, and React and Next.js for Front-end. Users can create accounts as participants or organizers to view/purchase tickets for events or create/manage them as organizers.
 
-Open [http://localhost:5173](http://localhost:5173) to view it in the browser. For API, you can access it in [http://localhost:8000/api](http://localhost:8000/api). The app will reload if you make edits.
+This project was meant as a 2-man project, but my partner was unable to complete their part. Project is incomplete; only Feature 2 of the Project Goals & Parameters has been completed, along with basic UI/UX features.
 
-### `npm run build`
+### Active Features
 
-Builds the app for production to the `dist` folder for each project.
+- Login and Register as Participants or Organizers
+- Referral codes on registration & purchases
+- Organizer dashboard for event history, statistics, & management
+- Supabase database integration
+  - Database random populator available in footer
 
-### `npm run serve`
+### Technologies
 
-Runs the app in the production mode.
+- **Languages**: TypeScript, HTML, CSS (Tailwind CSS)
+- **Back-end**: Node.js, Express.js, Prisma, JSON Web Token, Nodemailer
+- **Front-end**: React, Next.js, Redux, Formik, ApexCharts
+- **Database**: Supabase
 
-### `npm run <task> --workspace=<app-name>`
+### Project Setup
 
-Run command on specific app (install package, run test, etc).
+- **Prerequisites**
+  TypeScript
+  - **Back-end**: Node.js, Express.js
+  - **Front-end**: Next.js with React & TypeScript
+- **Easy Installation (Run in terminal)**
+  - **Back-end**: Run in `./apps/api`
+    `npm init --y`
+    `npm i typescript @types/node ts-node nodemon -D`
+    `npx tsc --init`
+    `npm i dotenv`
+    `npm i express`
+    `npm i @types/express -D`
+    `npm i prisma`
+    `npx prisma init`
+    `npm i @prisma/client`
+    `npm i bcrypt`
+    `npm i -D @types/bcrypt`
+    `npm i jsonwebtoken`
+    `npm i -D @types/jsonwebtoken`
+    `npm i jwt-decode`
+    `npm i cors`
+    `npm i -D @types/cors`
+    `npm i express-validator`
+    `npm i multer`
+    `npm i -D @types/multer`
+    `npm i nodemailer`
+    `npm i @types/nodemailer -D`
+    `npm i handlebars`
+    `npm i helmet`
+    `npm i milliseconds`
+    `npm i -D @types/milliseconds`
+  - **Front-end**: Run in `./apps/web`
+    `npx create-next-app@latest .`
+    `npm install @jridgewell/gen-mapping`
+    `npm i axios formik yup`
+    `npm i --save @fortawesome/fontawesome-svg-core`
+    `npm i --save @fortawesome/free-solid-svg-icons`
+    `npm i --save @fortawesome/free-regular-svg-icons`
+    `npm i --save @fortawesome/free-brands-svg-icons`
+    `npm i --save @fortawesome/react-fontawesome@latest`
+    `npm i sweetalert2`
+    `npm i apexcharts --save`
+    `npm install --save react-apexcharts`
+    `npm i @reduxjs/toolkit react-redux`
+- **Environment Variables**
+  - **Back-end**: .env in `./apps/api`
+    SECRET_KEY="I12edasc*&9vmid3CND*"
+    SECRET_KEY2="secondkey2983u409wo"
+    PORT=8080
+    NODEMAILER_EMAIL="miniprojectpurwadhika@gmail.com"
+    NODEMAILER_PASSWORD="rcom afcn hdup yayf"
+    ADMIN_EMAIL="juliangenesiusmuljadi@gmail.com"
+    BASE_WEB_URL="http://localhost:3000"
+    DATABASE_URL="postgresql://postgres.iozenelazdhyuxlnpskl:Ae9yNVKr8*ydMcv@aws-0-ap-southeast-1.pooler.supabase.com:6543/postgres?pgbouncer=true"
+    DIRECT_URL="postgresql://postgres.iozenelazdhyuxlnpskl:Ae9yNVKr8*ydMcv@aws-0-ap-southeast-1.pooler.supabase.com:5432/postgres"
+  - **Front-end**: .env in `./apps/web`
+    NEXT_PUBLIC_BASE_API_URL=http://localhost:8080
+    NEXT_PUBLIC_BASE_WEB_URL=http://localhost:3000
+    NEXT_PUBLIC_SECRET_KEY=I12edasc*&9vmid3CND*
+- **Running the Project Locally**
+  1.  Open terminals both in `./apps/api` and `./apps/web`.
+  2.  Run `npm run dev` on both.
+  3.  Open `http://localhost:3000 on your preferred browser.
+- **Database Management**
+  Run `npx prisma migrate dev` to sync Prisma with the database.
 
-### `npm run <task> --workspace=<app-name> -- --<option>`
+### Folders
 
-Run command on specific app with options.
-
-Example : `npm run seqeulize --workspace=api -- --db:migrate`
-
-# Rules
-
-## Commit & Pull Request
-
-- Always use [conventional commit message](https://www.conventionalcommits.org/en/v1.0.0/) when committing changes or creating pull request
-- **"Squash and Merge"** your pull request to main branch
-
-## Naming Convention
-
-### REST API
-
-- Always use [REST API naming convention](https://restfulapi.net/resource-naming/)
-
-### File Naming Conventions:
-
-1. **Use CamelCase for filenames:**
-   - Begin filenames with a lowercase letter.
-   - For multiple words, capitalize the first letter of each subsequent word.
-   - Example: `index.js`, `userModel.js`, `dataAccess.js`
-
-2. **Use Descriptive Names:**
-   - Choose names that accurately describe the file's purpose or content.
-   - Avoid overly generic names like `utils.js` unless the file genuinely contains utility functions.
-
-3. **Follow Naming Conventions for Specific File Types:**
-   - For configuration files, use names like `.env`, `config.js`, or `settings.json`.
-   - Use consistent naming for test files, such as appending `.test.js` or `.spec.js` to the filename being tested.
-   - Use `package.json` for the project's metadata and dependencies.
-
-4. **Separate Concerns with File Naming:**
-   - Follow a modular structure for different concerns (e.g., `userController.js`, `userService.js`, `userModel.js` for a user-related module).
-
-### Folder Naming Conventions:
-
-1. **Use Singular or Plural Naming:**
-   - Choose a consistent convention for naming folders (e.g., `models` or `model`, `routes` or `route`).
-
-2. **Avoid Special Characters and Spaces:**
-   - Use hyphens (`-`) or underscores (`_`) for separating words in folder names, but avoid spaces or special characters.
-
-3. **Use Descriptive Names for Folders:**
-   - Name folders according to their content or purpose (e.g., `controllers`, `services`, `utils`, `tests`, `public`, `views`, etc.).
-
-4. **Nested Folder Structure:**
-   - Create a logical and organized folder structure based on the project's architecture.
-   - For larger projects, consider organizing files by features/modules (Feature-Based Structure) or layer-based (Layered Structure).
+- ./
+  - apps/      # Project only required using this folder
+    - api/        # Back-end folder
+      - prisma/      # Prisma database management
+      - src/
+        - config/             # .env management
+        - controllers/        # Contains all main logic and handles all main API requests & responses
+        - databasepopulation/ # Contains logic & endpoints for database random population
+        - mailer/             # Nodemailer management and email templates
+        - middlewares/        # Request validations, token verifications, & error handling
+        - routers/            # API main endpoints
+    - web/ # Front-end folder
+      - src/
+        - app/                # Next.js app folder. Folder structure dictates routing
+        - assets/             # Various images
+        - components/         # Contains logic and views for pages
+        - databasepopulation/ # Contains logic for database random population
+        - errorhandler/       # SweetAlerts2 error handling
+        - interfaces/         # Various reusable interfaces
+        - redux/              # Redux slices & store
+        - verifytoken/        # Functions to verify access tokens

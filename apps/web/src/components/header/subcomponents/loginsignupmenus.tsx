@@ -1,6 +1,6 @@
 "use client";
 
-import VerifyTokenClient from "@/functions/verifytokenclient";
+import VerifyTokenClient from "@/verifytoken/verifytokenclient";
 import { AccessTokenOrganizer, AccessTokenUser } from "@/interfaces/accesstokens";
 import { toggleMenu } from "@/redux/slices/togglemenu";
 import Link from "next/link";

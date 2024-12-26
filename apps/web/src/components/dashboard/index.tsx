@@ -1,7 +1,7 @@
 import UserDashboard from "./userdashboard";
 import OrganizerDashboard from "./organizerdashboard";
 import { AccessTokenOrganizer, AccessTokenUser } from "@/interfaces/accesstokens";
-import VerifyTokenServer from "@/functions/verifytokenserver";
+import VerifyTokenServer from "@/verifytoken/verifytokenserver";
 
 export default async function DashboardView() {
     try {

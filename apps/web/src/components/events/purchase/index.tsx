@@ -1,6 +1,6 @@
 import axios from "axios";
 import InvalidEvent from "../invalidevent";
-import VerifyTokenServer from "@/functions/verifytokenserver";
+import VerifyTokenServer from "@/verifytoken/verifytokenserver";
 import { AccessTokenUser } from "@/interfaces/accesstokens";
 import { Coupons, Point_Balance, Events } from "@/interfaces/database_tables";
 import PurchaseFormProvider from "./purchaseform/purchaseformprovider";
