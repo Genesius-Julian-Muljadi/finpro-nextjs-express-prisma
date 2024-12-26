@@ -29,10 +29,9 @@ This project was meant as a 2-man project, but my partner was unable to complete
 
 - **Prerequisites**
 
-  TypeScript
-
+  - TypeScript
   - **Back-end**: Node.js, Express.js
-  - **Front-end**: Next.js with React & TypeScript
+  - **Front-end**: Next.js 14 with React 18 & TypeScript
 
 - **Easy Installation (Run in terminal)**
 
@@ -116,19 +115,21 @@ This project was meant as a 2-man project, but my partner was unable to complete
     - api/ --- # Back-end folder
       - prisma/ --- # Prisma database management
       - src/
-        - config/ ----------- # .env management
-        - controllers/ ------ # Contains all main logic and handles all main API requests & responses
-        - databasepopulation/ # Contains logic & endpoints for database random population
-        - mailer/ # Nodemailer management and email templates
-        - middlewares/ # Request validations, token verifications, & error handling
-        - routers/ # API main endpoints
+        - config/ --- # .env management
+        - controllers/ --- # Contains all main logic and handles all main API requests & responses
+        - databasepopulation/ --- # Contains logic & endpoints for database random population
+        - mailer/ --- # Nodemailer management and email templates
+        - middlewares/ --- # Request validations, token verifications, & error handling
+        - routers/ --- # API main endpoints
     - web/ # Front-end folder
       - src/
-        - app/ # Next.js app folder. Folder structure dictates routing
-        - assets/ # Various images
-        - components/ # Contains logic and views for pages
-        - databasepopulation/ # Contains logic for database random population
-        - errorhandler/ # SweetAlerts2 error handling
-        - interfaces/ # Various reusable interfaces
-        - redux/ # Redux slices & store
-        - verifytoken/ # Functions to verify access tokens
+        - app/ --- # Next.js app folder. Folder structure dictates routing
+        - assets/ --- # Various images
+        - components/ --- # Contains logic and views for pages
+        - databasepopulation/ --- # Contains logic for database random population
+        - errorhandler/ --- # SweetAlerts2 error handling
+        - interfaces/ --- # Various reusable interfaces
+        - redux/ --- # Redux slices & store
+        - verifytoken/ --- # Functions to verify access tokens
+
+##### Special mention to my friend, mal3diction, for helping me figure out a few things.
