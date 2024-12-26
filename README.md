@@ -121,7 +121,7 @@ This project was meant as a 2-man project, but my partner was unable to complete
         - mailer/ --- # Nodemailer management and email templates
         - middlewares/ --- # Request validations, token verifications, & error handling
         - routers/ --- # API main endpoints
-    - web/ # Front-end folder
+    - web/ --- # Front-end folder
       - src/
         - app/ --- # Next.js app folder. Folder structure dictates routing
         - assets/ --- # Various images
