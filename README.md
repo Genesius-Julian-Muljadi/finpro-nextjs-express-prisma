@@ -33,31 +33,31 @@ This project was meant as a 2-man project, but my partner was unable to complete
   - **Front-end**: Next.js with React & TypeScript
 - **Easy Installation (Run in terminal)**
   - **Back-end**: Run in `./apps/api`.
-    `npm init --y`
-    `npm i typescript @types/node ts-node nodemon -D`
-    `npx tsc --init`
-    `npm i dotenv`
-    `npm i express`
-    `npm i @types/express -D`
-    `npm i prisma`
-    `npx prisma init`
-    `npm i @prisma/client`
-    `npm i bcrypt`
-    `npm i -D @types/bcrypt`
-    `npm i jsonwebtoken`
-    `npm i -D @types/jsonwebtoken`
-    `npm i jwt-decode`
-    `npm i cors`
-    `npm i -D @types/cors`
-    `npm i express-validator`
-    `npm i multer`
-    `npm i -D @types/multer`
-    `npm i nodemailer`
-    `npm i @types/nodemailer -D`
-    `npm i handlebars`
-    `npm i helmet`
-    `npm i milliseconds`
-    `npm i -D @types/milliseconds`
+    ##### `npm init --y`
+    ##### `npm i typescript @types/node ts-node nodemon -D`
+    ##### `npx tsc --init`
+    ##### `npm i dotenv`
+    ##### `npm i express`
+    ##### `npm i @types/express -D`
+    ##### `npm i prisma`
+    ##### `npx prisma init`
+    ##### `npm i @prisma/client`
+    ##### `npm i bcrypt`
+    ##### `npm i -D @types/bcrypt`
+    ##### `npm i jsonwebtoken`
+    ##### `npm i -D @types/jsonwebtoken`
+    ##### `npm i jwt-decode`
+    ##### `npm i cors`
+    ##### `npm i -D @types/cors`
+    ##### `npm i express-validator`
+    ##### `npm i multer`
+    ##### `npm i -D @types/multer`
+    ##### `npm i nodemailer`
+    ##### `npm i @types/nodemailer -D`
+    ##### `npm i handlebars`
+    ##### `npm i helmet`
+    ##### `npm i milliseconds`
+    ##### `npm i -D @types/milliseconds`
   - **Front-end**: Run in `./apps/web`.
     `npx create-next-app@latest .`
     `npm install @jridgewell/gen-mapping`
