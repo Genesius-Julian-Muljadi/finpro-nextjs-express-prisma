@@ -12,7 +12,7 @@ This project was meant as a 2-man project, but my partner was unable to complete
 
 ### Active Features
 
-- Login and Register as Participants or Organizers
+- Sign up and Log in as Participants or Organizers
 - Referral codes on registration & purchases
 - Organizer dashboard for event history, statistics, & management
 - Supabase database integration
