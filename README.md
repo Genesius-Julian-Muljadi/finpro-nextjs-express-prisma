@@ -132,4 +132,4 @@ This project was meant as a 2-man project, but my partner was unable to complete
         - redux/ --- # Redux slices & store
         - verifytoken/ --- # Functions to verify access tokens
 
-##### Special mention to my friend, mal3diction, for helping me figure out a few things.
+#### Special mention to my friend, mal3diction, for helping me figure out a few things.
