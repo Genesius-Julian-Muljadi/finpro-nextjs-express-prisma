@@ -32,7 +32,7 @@ This project was meant as a 2-man project, but my partner was unable to complete
   - **Back-end**: Node.js, Express.js
   - **Front-end**: Next.js with React & TypeScript
 - **Easy Installation (Run in terminal)**
-  - **Back-end**: Run in `./apps/api`
+  - **Back-end**: Run in `./apps/api`.
     `npm init --y`
     `npm i typescript @types/node ts-node nodemon -D`
     `npx tsc --init`
@@ -58,7 +58,7 @@ This project was meant as a 2-man project, but my partner was unable to complete
     `npm i helmet`
     `npm i milliseconds`
     `npm i -D @types/milliseconds`
-  - **Front-end**: Run in `./apps/web`
+  - **Front-end**: Run in `./apps/web`.
     `npx create-next-app@latest .`
     `npm install @jridgewell/gen-mapping`
     `npm i axios formik yup`
